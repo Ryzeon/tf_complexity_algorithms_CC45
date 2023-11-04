@@ -26,7 +26,7 @@ class Graph:
             recomendations.sort(key=lambda x: x[1], reverse=True)
             return recomendations[:max_recomendations]
         return []
-
+    
     def get_object(self, node_name):
         if node_name in self.nodes:
             return self.nodes[node_name]['object']
