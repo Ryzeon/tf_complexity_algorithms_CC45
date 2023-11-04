@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Detalles de Videojuego - {{ game.name }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .game-details {
+            padding: 20px;
+        }
+
+        .game-image {
+            width: 100%;
+            max-height: 400px;
+        }
+
+        .related-games {
+            margin-top: 20px;
+        }
+
+        .related-game {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .related-game-image {
+            width: 100px;
+            height: 100px;
+        }
+
+        .related-game-info {
+            margin-left: 10px;
+        }
+
+        .related-game-info a {
+            color: black;
+            text-decoration: none;
+        }
+
+        .related-game:hover {
+            transform: scale(1.1);
+            opacity: 0.8;
+            transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+<a href="/">Regresar a la lista de videojuegos</a>
+<div class="container">
+    <h1>{{ game.name }}</h1>
+    <div class="game-details">
+        <p><strong>Plataforma:</strong> {{ game.platforms|join(', ') if game.platforms else 'N/A' }}</p>
+        <p><strong>Año de lanzamiento:</strong> {{ game.year_of_release or 'N/A' }}</p>
+        <p><strong>Géneros:</strong> {{ game.genres|join(', ') if game.genres else 'N/A' }}</p>
+        <p><strong>Editor:</strong> {{ game.publisher or 'N/A' }}</p>
+        <p><strong>Desarrollador:</strong> {{ game.developer or 'N/A' }}</p>
+        <p><strong>Calificación:</strong> {{ game.rating or 'N/A' }}</p>
+    </div>
+    <img class="game-image" src="{{ game_image }}" alt="Imagen del videojuego">
+    <br>
+    <br>
+
+    <div class="related-games">
+        <h2>Juegos que quizás te gusten:</h2>
+        <ul>
+            {% for game in related_games %}
+                <li class="related-game">
+                    <div class="related-game-image">
+                        <img src="/static/img/broken-image.png" alt="Imagen rota" width="100%" object-fit="contain">
+                    </div>
+                    <div class="related-game-info">
+                        <a href="/game/{{ game[0] }}">{{ game[0] }}</a>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en US">
+<head>
+    <title>Lista de Videojuegos</title>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+<h1>Lista de Videojuegos</h1>
+
+<div class="filter-bar">
+    <label for="platform-filter">Plataforma:</label>
+    <select id="platform-filter">
+        <option value="">Todas</option>
+        {% for platform in platforms %}
+            <option value="{{ platform }}">{{ platform }}</option>
+        {% endfor %}
+    </select>
+
+    <label for="genre-filter">Género:</label>
+    <select id="genre-filter">
+        <option value="">Todos</option>
+        {% for genre in genres %}
+            <option value="{{ genre }}">{{ genre }}</option>
+        {% endfor %}
+    </select>
+
+    <label for="year-filter">Año de lanzamiento:</label>
+    <select id="year-filter">
+        <option value="">Todos</option>
+        {% for year in years %}
+            <option value="{{ year }}">{{ year }}</option>
+        {% endfor %}
+    </select>
+</div>
+
+
+{{ pagination.info }}
+<ul class="game-list">
+    {% for game in video_games %}
+        <li class="game-item">
+            <a href="{{ url_for('game_details', game_name=game.id) }}">
+                <div class="game-item-content">
+                    <img src="https://i.imgur.com/WumAZyT_d.png" alt="{{ game.name }}">
+
+                    <div class="game-details">
+                        <h3>{{ game.name }}</h3>
+                        <p><strong>Plataforma:</strong> {{ game.platforms|join(', ') if game.platforms else 'N/A' }}</p>
+                        <p><strong>Año de lanzamiento:</strong> {{ game.year_of_release or 'N/A' }}</p>
+                        <p><strong>Géneros:</strong> {{ game.genres|join(', ') if game.genres else 'N/A' }}</p>
+                        <p><strong>Editor:</strong> {{ game.publisher or 'N/A' }}</p>
+                        <p><strong>Desarrollador:</strong> {{ game.developer or 'N/A' }}</p>
+                        <p><strong>Calificación:</strong> {{ game.rating or 'N/A' }}</p>
+                    </div>
+                </div>
+            </a>
+        </li>
+    {% endfor %}
+</ul>
+
+<div class="pagination">
+{{ pagination.links }}
+</div>
+
+<script src="{{ url_for('static', filename='filter.js') }}"></script>
+</body>
+</html>

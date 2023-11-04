@@ -1,6 +1,8 @@
 import time
 
-from flask import Flask
+import requests
+from flask import Flask, render_template, request
+from flask_paginate import Pagination
 
 from service.videogames_manager import VideoGamesManager
 from service.videogames_manager import RecommendationSearch
@@ -32,6 +34,7 @@ for recommendation in recommendationSearch:
     print(f'Weight: {recommendation[1]}')
     print('------------------')
 
+
 # d_graph = nx.Graph()
 # d_graph.add_node(videoGamesManager.getVideoGame(randomGame).id)
 # for recommendation in recommendationSearch:
@@ -47,9 +50,38 @@ for recommendation in recommendationSearch:
 
 
 @app.route('/')
-def hello_world():  # put application's code here
-    return 'Hello World!'
+def index():
+    page = request.args.get('page', type=int, default=1)
+    per_page = 10  # Cantidad de juegos por página
+    offset = (page - 1) * per_page
+    games = get_games(offset, per_page)
+
+    pagination = Pagination(page=page, total=len(videoGamesManager.videoGames), per_page=per_page, record_name='games')
+    return render_template('index.html',
+                           video_games=games,
+                           platforms=videoGamesManager.plataforms,
+                           pagination=pagination,
+                           genres=videoGamesManager.genres,
+                           years=videoGamesManager.year_of_releases,
+                           )
+
+
+def get_games(offset=0, per_page=10):
+    return videoGamesManager.getArrayVideoGames()[offset: offset + per_page]
+
+
+@app.route('/game/<game_name>')
+def game_details(game_name):
+    if videoGamesManager.exitsInVideoGames(game_name):
+        game = videoGamesManager.getVideoGame(game_name)
+        image_response = requests.get("https://picsum.photos/400/300")
+        game_image = image_response.url
+        return render_template('game_details.html', game=game, game_image=game_image,
+                               related_games=videoGamesManager.grafo.get_recommendations(game_name, 10,
+                                                                                         RecommendationSearch.LOW.value))
+    else:
+        return "Juego no encontrado"
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)

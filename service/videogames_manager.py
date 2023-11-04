@@ -44,6 +44,9 @@ class VideoGamesManager:
     def getVideoGames(self):
         return self.videoGames.items()
 
+    def getArrayVideoGames(self):
+        return list(self.videoGames.values())
+
     def getVideoGame(self, id):
         return self.videoGames[id]
 
