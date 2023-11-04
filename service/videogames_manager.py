@@ -21,7 +21,7 @@ class VideoGamesManager:
         self.year_of_releases = set()
         self.publishers = set()
         self.grafo = Graph()
-        self.conciendes_weight = {
+        self.coincidences_weight = {
             'platform': 30,
             'genre': 35,
             'year_of_release': 10,
@@ -52,23 +52,22 @@ class VideoGamesManager:
 
     # Calculate the weight of the concidences
     def calcularPonderado(self, videoGame, videoGame2):
-        # el ponderador debe sumar 100
         ponderado = 0
         for plataform in videoGame.platforms:
             max_platforms = len(videoGame.platforms)
             if plataform in videoGame2.platforms:
-                ponderado += self.conciendes_weight['platform'] / max_platforms
+                ponderado += self.coincidences_weight['platform'] / max_platforms
         for genre in videoGame.genres:
             if genre in videoGame2.genres:
-                ponderado += self.conciendes_weight['genre'] / len(videoGame.genres)
+                ponderado += self.coincidences_weight['genre'] / len(videoGame.genres)
         if videoGame.year_of_release == videoGame2.year_of_release:
-            ponderado += self.conciendes_weight['year_of_release']
+            ponderado += self.coincidences_weight['year_of_release']
         if videoGame.publisher == videoGame2.publisher:
-            ponderado += self.conciendes_weight['publisher']
+            ponderado += self.coincidences_weight['publisher']
         if videoGame.developer == videoGame2.developer:
-            ponderado += self.conciendes_weight['developer']
+            ponderado += self.coincidences_weight['developer']
         if videoGame.rating == videoGame2.rating:
-            ponderado += self.conciendes_weight['rating']
+            ponderado += self.coincidences_weight['rating']
         return ponderado
 
     def loadGames(self):
