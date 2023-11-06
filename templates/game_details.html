@@ -1,95 +1,134 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-<head>
+  <head>
     <title>Detalles de Videojuego - {{ game.name }}</title>
+    <link rel="stylesheet" href="../static/css/output.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+      rel="stylesheet"
+    />
+
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
-        }
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f0f0f0;
+      }
 
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #fff;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #fff;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+      }
 
-        .game-details {
-            padding: 20px;
-        }
+      .game-details {
+        padding: 20px;
+      }
 
-        .game-image {
-            width: 100%;
-            max-height: 400px;
-        }
+      .game-image {
+        width: 100%;
+        max-height: 400px;
+      }
 
-        .related-games {
-            margin-top: 20px;
-        }
+      .related-game-image {
+        width: 100px;
+        height: 100px;
+      }
 
-        .related-game {
-            display: flex;
-            align-items: center;
-            padding: 10px;
-            border-bottom: 1px solid #ddd;
-            border-radius: 5px;
-        }
+      .related-game-info {
+        margin-left: 10px;
+      }
 
-        .related-game-image {
-            width: 100px;
-            height: 100px;
-        }
+      .related-game-info a {
+      }
 
-        .related-game-info {
-            margin-left: 10px;
-        }
-
-        .related-game-info a {
-            color: black;
-            text-decoration: none;
-        }
-
-        .related-game:hover {
-            transform: scale(1.1);
-            opacity: 0.8;
-            transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
-        }
+      .related-game:hover {
+        transform: scale(1.1);
+        opacity: 0.8;
+        transition:
+          transform 0.5s ease-in-out,
+          opacity 0.5s ease-in-out;
+      }
     </style>
-</head>
-<body>
-<a href="/">Regresar a la lista de videojuegos</a>
-<div class="container">
-    <h1>{{ game.name }}</h1>
-    <div class="game-details">
-        <p><strong>Plataforma:</strong> {{ game.platforms|join(', ') if game.platforms else 'N/A' }}</p>
-        <p><strong>Año de lanzamiento:</strong> {{ game.year_of_release or 'N/A' }}</p>
-        <p><strong>Géneros:</strong> {{ game.genres|join(', ') if game.genres else 'N/A' }}</p>
-        <p><strong>Editor:</strong> {{ game.publisher or 'N/A' }}</p>
-        <p><strong>Desarrollador:</strong> {{ game.developer or 'N/A' }}</p>
-        <p><strong>Calificación:</strong> {{ game.rating or 'N/A' }}</p>
-    </div>
-    <img class="game-image" src="{{ game_image }}" alt="Imagen del videojuego">
-    <br>
-    <br>
+  </head>
+  <body>
+    <div
+      class="w-screen h-screen bg-black font-['Exo_2'] py-[100px] px-[100px] relative"
+    >
+      <a
+        href="/"
+        class="text-2xl text-purple-700 mb-4 flex items-center absolute top-5 left-5"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          class="h-[24px] w-[24px] mr-2 text-purple-700"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M15 19l-7-7 7-7"
+          ></path>
+        </svg>
+        Regresar a la lista de videojuegos
+      </a>
+      <div class="p-5 grid grid-cols-[auto_1fr] gap-28">
+        <div class="bg-purple-700 p-6 rounded-xl">
+          <div class="text-white mb-3">
+            <h3 class="text-4xl"><strong>{{ game.name }}</strong></h3>
+            <p>
+              <strong>Plataforma:</strong> {{ game.platforms|join(', ') if
+              game.platforms else 'N/A' }}
+            </p>
+            <p>
+              <strong>Año de lanzamiento:</strong> {{ game.year_of_release or
+              'N/A' }}
+            </p>
+            <p>
+              <strong>Géneros:</strong> {{ game.genres|join(', ') if game.genres
+              else 'N/A' }}
+            </p>
+            <p><strong>Editor:</strong> {{ game.publisher or 'N/A' }}</p>
+            <p><strong>Desarrollador:</strong> {{ game.developer or 'N/A' }}</p>
+            <p><strong>Calificación:</strong> {{ game.rating or 'N/A' }}</p>
+          </div>
+          <img
+            class="game-image"
+            src="{{ game_image }}"
+            alt="Imagen del videojuego"
+          />
+        </div>
 
-    <div class="related-games">
-        <h2>Juegos que quizás te gusten:</h2>
-        <ul>
+        <div>
+          <h2 class="text-4xl text-white mb-7">Juegos que quizás te gusten:</h2>
+          <ul class="grid grid-cols-3 gap-6">
             {% for game in related_games %}
-                <li class="related-game">
-                    <div class="related-game-image">
-                        <img src="/static/img/broken-image.png" alt="Imagen rota" width="100%" object-fit="contain">
-                    </div>
-                    <div class="related-game-info">
-                        <a href="/game/{{ game[0] }}">{{ game[0] }}</a>
-                    </div>
-                </li>
+            <li class="flex items-center bg-purple-950 p-6 rounded-xl">
+              <div class="related-game-image">
+                <img
+                  src="/static/img/broken-image.png"
+                  alt="Imagen rota"
+                  width="100%"
+                  object-fit="contain"
+                />
+              </div>
+              <div class="related-game-info">
+                <a class="text-white" href="/game/{{ game[0] }}"
+                  >{{ game[0] }}</a
+                >
+              </div>
+            </li>
             {% endfor %}
-        </ul>
+          </ul>
+        </div>
+      </div>
     </div>
-</div>
-</body>
+  </body>
 </html>

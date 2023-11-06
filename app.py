@@ -6,8 +6,8 @@ from flask_paginate import Pagination
 
 from service.videogames_manager import VideoGamesManager
 from service.videogames_manager import RecommendationSearch
-import networkx as nx
-import matplotlib.pyplot as plt
+# import networkx as nx
+# import matplotlib.pyplot as plt
 
 app = Flask(__name__)
 
@@ -27,10 +27,12 @@ randomGame = videoGamesManager.getRandomGame()
 
 print(f'Random game: {randomGame}')
 print(f'Random game: {videoGamesManager.getVideoGame(randomGame).to_string()}')
-recommendationSearch = videoGamesManager.grafo.get_recommendations(randomGame, 10, RecommendationSearch.LOW.value)
+recommendationSearch = videoGamesManager.grafo.get_recommendations(
+    randomGame, 10, RecommendationSearch.LOW.value)
 for recommendation in recommendationSearch:
     print('------------------')
-    print(f'Recommendation: {videoGamesManager.getVideoGame(recommendation[0]).to_string()}')
+    print(
+        f'Recommendation: {videoGamesManager.getVideoGame(recommendation[0]).to_string()}')
     print(f'Weight: {recommendation[1]}')
     print('------------------')
 
@@ -56,7 +58,8 @@ def index():
     offset = (page - 1) * per_page
     games = get_games(offset, per_page)
 
-    pagination = Pagination(page=page, total=len(videoGamesManager.videoGames), per_page=per_page, record_name='games')
+    pagination = Pagination(page=page, total=len(
+        videoGamesManager.videoGames), per_page=per_page, record_name='games')
     return render_template('index.html',
                            video_games=games,
                            platforms=videoGamesManager.plataforms,
