@@ -1,66 +1,78 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en US">
-<head>
-    <title>Lista de Videojuegos</title>
-        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
-</head>
-<body>
-<h1>Lista de Videojuegos</h1>
-
-<div class="filter-bar">
-    <label for="platform-filter">Plataforma:</label>
-    <select id="platform-filter">
-        <option value="">Todas</option>
+  <head>
+    <title>GameView</title>
+    <link rel="stylesheet" href="../static/css/output.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body >
+    <div class="w-full bg-black font-['Exo_2'] px-[100px] py-[70px]">
+<h1 class="text-center font-extrabold text-transparent text-7xl bg-clip-text bg-gradient-to-r from-purple-700 to-sky-300 mb-7">Lista de Videojuegos</h1>
+    <div class="filter-bar">
+      <label class="text-white" for="platform-filter">Plataforma:</label>
+      <select class="bg-purple-700 w-24 p-1 rounded-lg" id="platform-filter">
+        <option class="rounded-lg text-white">Todas</option>
         {% for platform in platforms %}
-            <option value="{{ platform }}">{{ platform }}</option>
+        <option class="rounded-lg bg-purple-700 text-white" value="{{ platform }}">{{ platform }}</option>
         {% endfor %}
-    </select>
+      </select>
 
-    <label for="genre-filter">Género:</label>
-    <select id="genre-filter">
+      <label class="text-white" for="genre-filter">Género:</label>
+      <select class="bg-green-200 w-24 p-1 rounded-lg" id="genre-filter">
         <option value="">Todos</option>
         {% for genre in genres %}
-            <option value="{{ genre }}">{{ genre }}</option>
+        <option value="{{ genre }}">{{ genre }}</option>
         {% endfor %}
-    </select>
+      </select>
 
-    <label for="year-filter">Año de lanzamiento:</label>
-    <select id="year-filter">
+      <label class="text-white" for="year-filter">Año de lanzamiento:</label>
+      <select class="bg-green-200 w-24 p-1 rounded-lg" id="year-filter">
         <option value="">Todos</option>
         {% for year in years %}
-            <option value="{{ year }}">{{ year }}</option>
+        <option value="{{ year }}">{{ year }}</option>
         {% endfor %}
-    </select>
-</div>
+      </select>
+    </div>
 
+    <h2 class="text-2xl text-white uppercase">{{ pagination.info }}</h3>
+    <ul class="game-list">
+      {% for game in video_games %}
+      <li class="game-item rounded-lg p-5 w-[500px] h-[500px]">
+        <a href="{{ url_for('game_details', game_name=game.id) }}">
+            <div class="text-white">
+              <h3 class="text-4xl"><strong>{{ game.name }}</strong></h3>
+              <p>
+                <strong>Plataforma:</strong> {{ game.platforms|join(', ') if
+                game.platforms else 'N/A' }}
+              </p>
+              <p>
+                <strong>Año de lanzamiento:</strong> {{ game.year_of_release or
+                'N/A' }}
+              </p>
+              <p>
+                <strong>Géneros:</strong> {{ game.genres|join(', ') if
+                game.genres else 'N/A' }}
+              </p>
+              <p><strong>Editor:</strong> {{ game.publisher or 'N/A' }}</p>
+              <p>
+                <strong>Desarrollador:</strong> {{ game.developer or 'N/A' }}
+              </p>
+              <p><strong>Calificación:</strong> {{ game.rating or 'N/A' }}</p>
+            </div>
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
 
-{{ pagination.info }}
-<ul class="game-list">
-    {% for game in video_games %}
-        <li class="game-item">
-            <a href="{{ url_for('game_details', game_name=game.id) }}">
-                <div class="game-item-content">
-                    <img src="https://i.imgur.com/WumAZyT_d.png" alt="{{ game.name }}">
+    <div class="pagination">{{ pagination.links }}</div>
 
-                    <div class="game-details">
-                        <h3>{{ game.name }}</h3>
-                        <p><strong>Plataforma:</strong> {{ game.platforms|join(', ') if game.platforms else 'N/A' }}</p>
-                        <p><strong>Año de lanzamiento:</strong> {{ game.year_of_release or 'N/A' }}</p>
-                        <p><strong>Géneros:</strong> {{ game.genres|join(', ') if game.genres else 'N/A' }}</p>
-                        <p><strong>Editor:</strong> {{ game.publisher or 'N/A' }}</p>
-                        <p><strong>Desarrollador:</strong> {{ game.developer or 'N/A' }}</p>
-                        <p><strong>Calificación:</strong> {{ game.rating or 'N/A' }}</p>
-                    </div>
-                </div>
-            </a>
-        </li>
-    {% endfor %}
-</ul>
+    <script src="{{ url_for('static', filename='filter.js') }}"></script>
 
-<div class="pagination">
-{{ pagination.links }}
-</div>
-
-<script src="{{ url_for('static', filename='filter.js') }}"></script>
-</body>
+    </div> 
+  </body>
 </html>
