@@ -1,3 +1,4 @@
+import random
 import time
 
 import requests
@@ -6,8 +7,11 @@ from flask_paginate import Pagination
 
 from service.videogames_manager import VideoGamesManager
 from service.videogames_manager import RecommendationSearch
-# import networkx as nx
-# import matplotlib.pyplot as plt
+from utils.utils import get_video_info
+from utils.utils import get_images_from_google_image
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = Flask(__name__)
 
@@ -27,14 +31,22 @@ randomGame = videoGamesManager.getRandomGame()
 
 print(f'Random game: {randomGame}')
 print(f'Random game: {videoGamesManager.getVideoGame(randomGame).to_string()}')
-recommendationSearch = videoGamesManager.grafo.get_recommendations(
-    randomGame, 10, RecommendationSearch.LOW.value)
-for recommendation in recommendationSearch:
-    print('------------------')
-    print(
-        f'Recommendation: {videoGamesManager.getVideoGame(recommendation[0]).to_string()}')
-    print(f'Weight: {recommendation[1]}')
-    print('------------------')
+
+
+# recommendationSearch = videoGamesManager.grafo.get_recommendations(
+#     randomGame, 10, RecommendationSearch.LOW.value)
+# for recommendation in recommendationSearch:
+#     print('------------------')
+#     print(
+#         f'Recommendation: {videoGamesManager.getVideoGame(recommendation[0]).to_string()}')
+#     print(f'Weight: {recommendation[1]}')
+#     print('------------------')
+
+x = get_video_info(randomGame, 10)
+#
+# y = get_images_from_google_image(randomGame, 10)
+# print(x)
+# print(y)
 
 
 # d_graph = nx.Graph()
@@ -77,9 +89,16 @@ def get_games(offset=0, per_page=10):
 def game_details(game_name):
     if videoGamesManager.exitsInVideoGames(game_name):
         game = videoGamesManager.getVideoGame(game_name)
-        image_response = requests.get("https://picsum.photos/400/300")
-        game_image = image_response.url
-        return render_template('game_details.html', game=game, game_image=game_image,
+        # image_response = requests.get("https://picsum.photos/400/300")
+        game_video = random.choice(get_video_info(game_name, 10))
+        print(game_video.embed_url)
+        print(game_video.title)
+        game_image = random.choice(get_images_from_google_image(game_name, 10))
+        return render_template('game_details.html',
+                               game=game,
+                               game_image=game_image,
+                               game_video=game_video.embed_url,
+                               game_title=game_video.title,
                                related_games=videoGamesManager.grafo.get_recommendations(game_name, 10,
                                                                                          RecommendationSearch.LOW.value))
     else:
