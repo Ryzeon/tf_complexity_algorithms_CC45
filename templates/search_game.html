@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>GameView</title>
+    <link rel="stylesheet" href="../static/css/output.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="font-['Exo_2'] bg-black w-full">
+    <header class="flex items-center justify-between px-60 py-4">
+      <div>
+        <a href="/" class="flex items-center gap-3">
+          <img
+            class="w-[60px] h-[60px]"
+            src="https://deepinenespañol.org/wp-content/uploads/2019/03/icono_juegos.png"
+            alt="logo-header"
+          />
+          <h1
+            class="text-2xl text-transparent bg-clip-text bg-gradient-to-r from-purple-700 to-sky-300"
+          >
+            GameView
+          </h1>
+        </a>
+      </div>
+      <div class="flex gap-7">
+        <a
+          class="text-xl text-transparent bg-clip-text bg-gradient-to-r from-purple-700 to-sky-300"
+          href="/"
+          >Inicio</a
+        >
+        <a
+          href="/search-game"
+          class="text-xl text-transparent bg-clip-text bg-gradient-to-r from-purple-700 to-sky-300"
+          >Encuentra tu juego</a
+        >
+        <a
+          href="./developers"
+          class="text-xl text-transparent bg-clip-text bg-gradient-to-r from-purple-700 to-sky-300"
+          >Desarrolladores</a
+        >
+      </div>
+    </header>
+
+    <section class="w-full px-32 py-14">
+      <p
+        class="text-transparent text-5xl bg-clip-text bg-gradient-to-r from-purple-700 to-sky-300 mb-5"
+      >
+        Encuentra tu juego
+      </p>
+
+      <div class="flex justify-end gap-7">
+        <div>
+          <label class="text-white" for="platform-filter">Plataforma:</label>
+          <select class="bg-green-200 p-1 rounded-lg" id="platform-filter">
+            <option class="text-white">Todas</option>
+            <option class="text-white">Todas</option>
+            <option class="text-white">Todas</option>
+            <option class="text-white">Todas</option>
+            <option class="text-white">Todas</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="text-white" for="genre-filter">Género:</label>
+          <select class="bg-green-200 p-1 rounded-lg" id="genre-filter">
+            <option value="">Todos</option>
+            <option value="">Todos</option>
+            <option value="">Todos</option>
+            <option value="">Todos</option>
+            <option value="">Todos</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="text-white" for="year-filter"
+            >Año de lanzamiento:</label
+          >
+          <select class="bg-green-200 p-1 rounded-lg" id="year-filter">
+            <option value="">Todos</option>
+            <option value="">Todos</option>
+            <option value="">Todos</option>
+            <option value="">Todos</option>
+            <option value="">Todos</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="mt-10">
+        <div>
+          <label class="text-white mr-4" for="search"
+            >Ingresa el nombre de tu juego</label
+          >
+          <input
+            class="rounded-lg p-2 bg-green-200 w-[400px]"
+            type="search"
+            id="search"
+            data-search
+          />
+        </div>
+        <section class="grid grid-cols-[800px_1fr] gap-10 mt-8">
+          <div>
+            <ul class="flex flex-col gap-3">
+              <li class="rounded-lg bg-purple-900 px-6 py-3">
+                <a
+                  class="text-white flex items-center gap-10"
+                  href="/search-game"
+                >
+                  <p class="text-white">1</p>
+                  <div class="text-center">
+                    <strong>Nombre</strong>
+                    <p>Call of Duty: Black Ops 3</p>
+                  </div>
+                  <div class="text-center">
+                    <strong>Plataforma</strong>
+                    <p>PC, PS3, XOne, X360, PS4</p>
+                  </div>
+                  <div class="text-center">
+                    <strong>Genero</strong>
+                    <p>Shooter</p>
+                  </div>
+                  <div class="text-center">
+                    <strong>Año de lanzamiento</strong>
+                    <p>2015</p>
+                  </div>
+                </a>
+              </li>
+              <li class="rounded-lg bg-purple-900 max-w-4xl px-6 py-3">
+                <a
+                  class="text-white flex items-center gap-10"
+                  href="/search-game"
+                >
+                  <p class="text-white">1</p>
+                  <div class="text-center">
+                    <strong>Nombre</strong>
+                    <p>Call of Duty: Black Ops 3</p>
+                  </div>
+                  <div class="text-center">
+                    <strong>Plataforma</strong>
+                    <p>PC, PS3, XOne, X360, PS4</p>
+                  </div>
+                  <div class="text-center">
+                    <strong>Genero</strong>
+                    <p>Shooter</p>
+                  </div>
+                  <div class="text-center">
+                    <strong>Año de lanzamiento</strong>
+                    <p>2015</p>
+                  </div>
+                </a>
+              </li>
+              <li class="rounded-lg bg-purple-900 max-w-4xl px-6 py-3">
+                <a
+                  class="text-white flex items-center gap-10"
+                  href="/search-game"
+                >
+                  <p class="text-white">1</p>
+                  <div class="text-center">
+                    <strong>Nombre</strong>
+                    <p>Call of Duty: Black Ops 3</p>
+                  </div>
+                  <div class="text-center">
+                    <strong>Plataforma</strong>
+                    <p>PC, PS3, XOne, X360, PS4</p>
+                  </div>
+                  <div class="text-center">
+                    <strong>Genero</strong>
+                    <p>Shooter</p>
+                  </div>
+                  <div class="text-center">
+                    <strong>Año de lanzamiento</strong>
+                    <p>2015</p>
+                  </div>
+                </a>
+              </li>
+
+              <li class="rounded-lg bg-purple-900 max-w-4xl px-6 py-3">
+                <a
+                  class="text-white flex items-center gap-10"
+                  href="/search-game"
+                >
+                  <p class="text-white">1</p>
+                  <div class="text-center">
+                    <strong>Nombre</strong>
+                    <p>Call of Duty: Black Ops 3</p>
+                  </div>
+                  <div class="text-center">
+                    <strong>Plataforma</strong>
+                    <p>PC, PS3, XOne, X360, PS4</p>
+                  </div>
+                  <div class="text-center">
+                    <strong>Genero</strong>
+                    <p>Shooter</p>
+                  </div>
+                  <div class="text-center">
+                    <strong>Año de lanzamiento</strong>
+                    <p>2015</p>
+                  </div>
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div class="w-full flex flex-col items-center gap-8">
+            <button
+              class="bg-cyan-700 p-3 rounded-lg text-white hover:bg-cyan-600"
+            >
+              MOSTRAR GRAFO
+            </button>
+            <img class="bg-green-200 w-[500px] h-full" src="" alt="" />
+          </div>
+        </section>
+      </div>
+    </section>
+  </body>
+</html>

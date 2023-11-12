@@ -1,7 +1,7 @@
 import random
 import time
 
-import requests
+# import requests
 from flask import Flask, render_template, request
 from flask_paginate import Pagination
 
@@ -79,6 +79,16 @@ def index():
                            genres=videoGamesManager.genres,
                            years=videoGamesManager.year_of_releases,
                            )
+
+
+@app.route("/developers")
+def developers():
+    return render_template("developers.html")
+
+
+@app.route("/search-game")
+def searchGame():
+    return render_template("search_game.html")
 
 
 def get_games(offset=0, per_page=10):
