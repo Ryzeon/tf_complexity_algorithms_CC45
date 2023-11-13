@@ -32,7 +32,6 @@ randomGame = videoGamesManager.getRandomGame()
 print(f'Random game: {randomGame}')
 print(f'Random game: {videoGamesManager.getVideoGame(randomGame).to_string()}')
 
-
 # recommendationSearch = videoGamesManager.grafo.get_recommendations(
 #     randomGame, 10, RecommendationSearch.LOW.value)
 # for recommendation in recommendationSearch:
@@ -43,6 +42,8 @@ print(f'Random game: {videoGamesManager.getVideoGame(randomGame).to_string()}')
 #     print('------------------')
 
 x = get_video_info(randomGame, 10)
+
+
 #
 # y = get_images_from_google_image(randomGame, 10)
 # print(x)
@@ -110,7 +111,8 @@ def game_details(game_name):
                                game_video=game_video.embed_url,
                                game_title=game_video.title,
                                related_games=videoGamesManager.grafo.get_recommendations(game_name, 10,
-                                                                                         RecommendationSearch.LOW.value))
+                                                                                         RecommendationSearch.LOW.value)
+                               )
     else:
         return "Juego no encontrado"
 
