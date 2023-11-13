@@ -1,6 +1,7 @@
 import csv
 import os
 import random
+import json
 
 from model.videogame import VideoGame
 from model.grafo import Graph
@@ -102,6 +103,16 @@ class VideoGamesManager:
                     ponderado = self.calcularPonderado(videoGame, videoGame2)
                     if ponderado > RecommendationSearch.MEDIUM.value:
                         self.grafo.add_edge(videoGame.id, videoGame2.id, ponderado)
+
+    def saveToJson(self):
+        jsonArray = []
+        for videoGame in self.videoGames.values():
+            jsonArray.append(videoGame.getDic())
+        with open('original_data.json', 'w') as outfile:
+            json.dump(jsonArray, outfile, indent=2)
+
+    def loadFromJson(self):
+        pass
 
     def loadGraph(self):
         self.addGamesToGraph()

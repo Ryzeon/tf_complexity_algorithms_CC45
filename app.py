@@ -19,6 +19,7 @@ videoGamesManager = VideoGamesManager()  # Singleton
 # Calcualte ms to load
 start = time.time()
 videoGamesManager.loadGames()
+videoGamesManager.saveToJson()
 # Limit games to 2000 games
 videoGamesManager.limitGames(2000)
 print(len(videoGamesManager.getVideoGames()))
