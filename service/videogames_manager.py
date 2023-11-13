@@ -100,7 +100,8 @@ class VideoGamesManager:
             for videoGame2 in self.videoGames.values():
                 if videoGame.id != videoGame2.id:
                     ponderado = self.calcularPonderado(videoGame, videoGame2)
-                    self.grafo.add_edge(videoGame.id, videoGame2.id, ponderado)
+                    if ponderado > RecommendationSearch.MEDIUM.value:
+                        self.grafo.add_edge(videoGame.id, videoGame2.id, ponderado)
 
     def loadGraph(self):
         self.addGamesToGraph()
