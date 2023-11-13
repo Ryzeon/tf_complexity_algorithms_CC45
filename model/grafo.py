@@ -24,6 +24,16 @@ class Graph:
             return recomendations[:max_recomendations]
         return []
 
+    # this is an invert djikstra to get the maxs paths
+    # https://www.geeksforgeeks.org/printing-paths-dijkstras-shortest-path-algorithm/
+    def get_recommendations_invert(self, node_src, max):
+        visited = dict()
+        for node in self.nodes:
+            visited[node] = False
+        path = [node_src]
+        self.get_recommendations_invert_util(node_src, visited, path, max)
+        return path
+
     def get_object(self, node_name):
         if node_name in self.nodes:
             return self.nodes[node_name]['object']
@@ -33,3 +43,15 @@ class Graph:
         if node_name in self.nodes:
             return self.nodes[node_name]['edges']
         return []
+
+    def get_recommendations_invert_util(self, node_src, visited, path, max):
+        if len(path) == max:
+            print(path)
+            return
+        visited[node_src] = True
+        for edge in self.nodes[node_src]['edges']:
+            if not visited[edge]:
+                path.append(edge)
+                self.get_recommendations_invert_util(edge, visited, path, max)
+                path.pop()
+        visited[node_src] = False
