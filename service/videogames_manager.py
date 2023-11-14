@@ -80,9 +80,12 @@ class VideoGamesManager:
         with open(relative_path, newline='') as csvfile:
             reader = csv.DictReader(csvfile)
             for row in reader:
-                video_game = VideoGame(row['Name'], row['Platform'], row['Year_of_Release'], row['Genre'],
+                video_game = VideoGame(row['Name'].replace("/", "-"), row['Platform'], row['Year_of_Release'],
+                                       row['Genre'],
                                        row['Publisher'],
-                                       row['User_Count'], row['Developer'], row['Rating'])
+                                       row['User_Count'], row['Developer'], row['Rating'],
+                                       platforms=None, genres=None, users_platforms=None
+                                       )
                 if self.exitsInVideoGames(video_game.id):
                     self.updateVideoGame(video_game.id, row['Platform'], row['Genre'], row['User_Count'])
                 else:
@@ -94,7 +97,7 @@ class VideoGamesManager:
 
     def addGamesToGraph(self):
         for videoGame in self.videoGames.values():
-            self.grafo.add_node(videoGame.id, videoGame)
+            self.grafo.add_node(videoGame.id, videoGame.id)
 
     def addConnections(self):
         for videoGame in self.videoGames.values():
@@ -112,11 +115,24 @@ class VideoGamesManager:
             json.dump(jsonArray, outfile, indent=2)
 
     def loadFromJson(self):
-        pass
+        with open('original_data.json') as json_file:
+            data = json.load(json_file)
+            for videoGame in data:
+                self.addJsonGame(videoGame)
+
+    def addJsonGame(self, videoGameJson):
+        self.videoGames[videoGameJson['id']] = VideoGame(videoGameJson['id'], None, videoGameJson['year_of_release'],
+                                                         None, videoGameJson['publisher'], None,
+                                                         videoGameJson['developer'], videoGameJson['rating'],
+                                                         platforms=videoGameJson['platforms'],
+                                                         genres=videoGameJson['genres'],
+                                                         users_platforms=videoGameJson['users_platforms']
+                                                         )
 
     def loadGraph(self):
-        self.addGamesToGraph()
-        self.addConnections()
+        self.grafo.loadFromJson('normal_graph.json')
+        # self.addGamesToGraph()
+        # self.addConnections()
 
     def deleteRandomGame(self):
         randomGame = random.choice(list(self.videoGames.keys()))
