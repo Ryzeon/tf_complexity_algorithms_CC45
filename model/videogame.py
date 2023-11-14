@@ -7,10 +7,12 @@ class VideoGame:
             users_platforms[platform] = user_count
         if genres is None:
             genres = list()
-            self.add_genre(genre)
+            if genres not in genres:
+                genres.append(genre)
         if platforms is None:
             platforms = list()
-            self.add_platform(platform)
+            if platform not in platforms:
+                platforms.append(platform)
         self.id = name
         self.name = name
         self.platforms = platforms

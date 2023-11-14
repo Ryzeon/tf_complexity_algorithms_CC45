@@ -1,6 +1,13 @@
+import json
+
+
 class Graph:
     def __init__(self):
         self.nodes = dict()
+
+    def loadFromJson(self, graph_name):
+        with open(graph_name) as json_file:
+            self.nodes = json.load(json_file)
 
     def add_node(self, node_name, node_object):
         if node_name not in self.nodes:
@@ -43,6 +50,10 @@ class Graph:
         if node_name in self.nodes:
             return self.nodes[node_name]['edges']
         return []
+
+    def saveGraph(self, graph_name):
+        with open(graph_name, 'w') as outfile:
+            json.dump(self.nodes, outfile, indent=2)
 
     def get_recommendations_invert_util(self, node_src, visited, path, max):
         if len(path) == max:
