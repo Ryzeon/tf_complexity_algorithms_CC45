@@ -16,7 +16,6 @@ load_dotenv()
 app = Flask(__name__)
 
 videoGamesManager = VideoGamesManager()  # Singleton
-# Calcualte ms to load
 start = time.time()
 videoGamesManager.loadFromJson()
 # videoGamesManager.saveToJson()
@@ -41,28 +40,20 @@ print(f"Loaded platforms graph with {len(videoGamesManager.platforms_graph.nodes
 print(f"Loaded publishers graph with {len(videoGamesManager.publishers_graph.nodes)} nodes")
 # videoGamesManager.grafo.saveGraph("main_graph.json")
 
-randomGame = videoGamesManager.getRandomGame()
+randomGame = videoGamesManager.getGamesWithMachName("pokemon")
+randomGame = random.choice(randomGame).id
 
 print(f'Random game: {randomGame}')
 print(f'Random game: {videoGamesManager.getVideoGame(randomGame).to_string()}')
 
-# recommendationSearch = videoGamesManager.grafo.get_recommendations(
-#     randomGame, 10, RecommendationSearch.LOW.value)
-# for recommendation in recommendationSearch:
-#     print('------------------')
-#     print(
-#         f'Recommendation: {videoGamesManager.getVideoGame(recommendation[0]).to_string()}')
-#     print(f'Weight: {recommendation[1]}')
-#     print('------------------')
-
-x = get_video_info(randomGame, 10)
-
-
-#
-# y = get_images_from_google_image(randomGame, 10)
-# print(x)
-# print(y)
-
+recommendationSearch = videoGamesManager.main_graph.get_recommendations_invert(
+    randomGame, 10)
+print(len(recommendationSearch))
+for recommendation in recommendationSearch:
+    print("-"*50)
+    print(f'Conection: {recommendation[0]} - Weight: {recommendation[1]}')
+    print(f'Game: {videoGamesManager.getVideoGame(recommendation[0]).to_string()}')
+    print("-" * 50)
 
 # d_graph = nx.Graph()
 # d_graph.add_node(videoGamesManager.getVideoGame(randomGame).id)

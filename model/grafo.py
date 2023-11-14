@@ -1,3 +1,4 @@
+import heapq
 import json
 
 
@@ -32,15 +33,30 @@ class Graph:
             return recomendations[:max_recomendations]
         return []
 
-    # this is an invert djikstra to get the maxs paths
-    # https://www.geeksforgeeks.org/printing-paths-dijkstras-shortest-path-algorithm/
-    def get_recommendations_invert(self, node_src, max):
-        visited = dict()
-        for node in self.nodes:
-            visited[node] = False
-        path = [node_src]
-        self.get_recommendations_invert_util(node_src, visited, path, max)
-        return path
+    def get_recommendations_invert(self, node_src, max_recommendations):
+        if node_src not in self.nodes:
+            return []
+
+        visited = set()
+        queue = [(0, node_src)]  # Initialize the priority queue with node_src
+        recommendations = []
+
+        while queue and len(recommendations) < max_recommendations:
+            _, current_node = queue.pop(0)
+
+            if current_node in visited:
+                continue
+
+            visited.add(current_node)
+
+            for neighbor, weight in self.get_edges(current_node).items():
+                if neighbor not in visited:
+                    queue.append((weight, neighbor))
+
+            sorted_neighbors = sorted(queue, key=lambda x: x[0], reverse=True)
+            recommendations = [(neighbor, weight) for weight, neighbor in sorted_neighbors[:max_recommendations]]
+
+        return recommendations
 
     def get_object(self, node_name):
         if node_name in self.nodes:
@@ -55,15 +71,3 @@ class Graph:
     def saveGraph(self, graph_name):
         with open(graph_name, 'w') as outfile:
             json.dump(self.nodes, outfile, indent=2)
-
-    def get_recommendations_invert_util(self, node_src, visited, path, max):
-        if len(path) == max:
-            print(path)
-            return
-        visited[node_src] = True
-        for edge in self.nodes[node_src]['edges']:
-            if not visited[edge]:
-                path.append(edge)
-                self.get_recommendations_invert_util(edge, visited, path, max)
-                path.pop()
-        visited[node_src] = False

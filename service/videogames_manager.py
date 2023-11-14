@@ -57,6 +57,13 @@ class VideoGamesManager:
     def updateVideoGame(self, id, plataform, genre, user_count):
         self.videoGames[id].update(plataform, genre, user_count)
 
+    def getGamesWithMachName(self, name):
+        games = []
+        for videoGame in self.videoGames.values():
+            if name.lower() in videoGame.name.lower():
+                games.append(videoGame)
+        return games
+
     # Calculate the weight of the concidences
     def calcularPonderado(self, videoGame, videoGame2):
         ponderado = 0
