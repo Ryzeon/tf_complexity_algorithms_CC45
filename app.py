@@ -18,15 +18,24 @@ app = Flask(__name__)
 videoGamesManager = VideoGamesManager()  # Singleton
 # Calcualte ms to load
 start = time.time()
-videoGamesManager.loadGames()
-videoGamesManager.saveToJson()
+videoGamesManager.loadFromJson()
+# videoGamesManager.saveToJson()
 # Limit games to 2000 games
-videoGamesManager.limitGames(2000)
-print(len(videoGamesManager.getVideoGames()))
-videoGamesManager.loadGraph()
+# videoGamesManager.loadGames()
+# videoGamesManager.limitGames(5000)
+# videoGamesManager.saveToJson()
 fix_ms = time.time() - start
 fix_ms = round(fix_ms, 4)
 print(f'Total time to load: {fix_ms} ms')
+print(len(videoGamesManager.getVideoGames()))
+print("Loading graph...")
+start = time.time()
+videoGamesManager.loadGraph()
+fix_ms = time.time() - start
+fix_ms = round(fix_ms, 4)
+print("Total time to load graph: " + str(fix_ms) + " ms")
+print(f"Loaded graph with {len(videoGamesManager.grafo.nodes)} nodes")
+# videoGamesManager.grafo.saveGraph("normal_graph.json")
 
 randomGame = videoGamesManager.getRandomGame()
 
