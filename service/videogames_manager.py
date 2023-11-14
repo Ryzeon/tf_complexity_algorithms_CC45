@@ -2,6 +2,7 @@ import csv
 import os
 import random
 import json
+from re import S
 
 from model.videogame import VideoGame
 from model.grafo import Graph
@@ -133,6 +134,15 @@ class VideoGamesManager:
             data = json.load(json_file)
             for videoGame in data:
                 self.addJsonGame(videoGame)
+        self.year_of_releases = list(self.year_of_releases)
+        self.publishers = list(self.publishers)
+        self.genres = list(self.genres)
+        self.plataforms = list(self.plataforms)
+        self.year_of_releases.sort()
+        self.publishers.sort()
+        self.genres.sort()
+        self.plataforms.sort()
+        
 
     def addJsonGame(self, videoGameJson):
         self.videoGames[videoGameJson['id']] = VideoGame(videoGameJson['id'], None, videoGameJson['year_of_release'],
@@ -152,6 +162,7 @@ class VideoGamesManager:
             if len(platform) > 0:
                 self.plataforms.add(platform)
         self.publishers.add(videoGameJson['publisher'])
+        self.year_of_releases.add(videoGameJson['year_of_release'])
 
     def loadGraph(self):
         self.main_graph.loadFromJson('main_graph.json')
