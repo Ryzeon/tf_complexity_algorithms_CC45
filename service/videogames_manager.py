@@ -26,9 +26,10 @@ class VideoGamesManager:
         self.platforms_graph = Graph()
         self.publishers_graph = Graph()
         self.coincidences_weight = {
-            'platform': 30,
-            'genre': 35,
-            'year_of_release': 10,
+            'name': 35,
+            'platform': 15,
+            'genre': 20,
+            'year_of_release': 5,
             'publisher': 10,
             'developer': 5,
             'rating': 10
@@ -82,6 +83,9 @@ class VideoGamesManager:
             ponderado += self.coincidences_weight['developer']
         if videoGame.rating == videoGame2.rating:
             ponderado += self.coincidences_weight['rating']
+        for videoGamest in videoGame.name.lower().split(" "):
+            if videoGamest in videoGame2.name.lower():
+                ponderado += self.coincidences_weight['name'] / len(videoGame.name.split(" "))
         return ponderado
 
     def loadGames(self):
@@ -156,6 +160,7 @@ class VideoGamesManager:
         self.publishers_graph.loadFromJson('publishers_graph.json')
         # self.addGamesToGraph()
         # self.addConnections()
+        # self.main_graph.saveGraph('main_graph.json')
 
     def loadAndSaveAuxGraphs(self):
         for publisher in self.publishers:
