@@ -1,4 +1,5 @@
 import random
+import re
 import time
 
 # import requests
@@ -112,12 +113,24 @@ def developers():
 
 @app.route('/search-game')
 def searchGame():
+    game_to_search = request.args.get('game_to_search', type=str, default="")
+    filter_gender_query = request.args.get('gender[]', type=list, default="")
+    filter_platform_query = request.args.get('platform[]', type=list, default="")
+    filter_year_query = request.args.get('year[]', type=list, default="") 
+    game = videoGamesManager.getGamesWithMachName(game_to_search)
+    if len(game) > 0:
+        game = game[0].id
+    else:
+        game = randomGame
+    releated_games = videoGamesManager.main_graph.get_recommendations_invert(game, 10)
     print(request.args)
     return render_template(
         "search_game.html",
         platforms=videoGamesManager.plataforms,
         genres=videoGamesManager.genres,
         years=videoGamesManager.year_of_releases,
+        related_games = releated_games,
+        game=game
         )
 
 

@@ -143,6 +143,13 @@ class VideoGamesManager:
         self.genres.sort()
         self.plataforms.sort()
         
+    def get_recommendations_with_filters(self, node_src, gender_filter, platform_filter, year_filter, max_recommendations):
+        if node_src not in self.main_graph.nodes:
+            return []
+        # if gender filter is empty allow all
+        # if platform filter is empty allow all
+        # if year filter is empty allow all
+        
 
     def addJsonGame(self, videoGameJson):
         self.videoGames[videoGameJson['id']] = VideoGame(videoGameJson['id'], None, videoGameJson['year_of_release'],
