@@ -26,13 +26,13 @@ class VideoGamesManager:
         self.platforms_graph = Graph()
         self.publishers_graph = Graph()
         self.coincidences_weight = {
-            'name': 35,
-            'platform': 15,
-            'genre': 20,
-            'year_of_release': 5,
+            'name': 60,
+            'platform': 4,
+            'genre': 15,
+            'year_of_release': 3,
             'publisher': 10,
             'developer': 5,
-            'rating': 10
+            'rating': 3
         }
 
     def exitsInVideoGames(self, id):
