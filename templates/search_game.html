@@ -64,30 +64,12 @@
           <div
             class="px-3 py-1 bg-green-200 max-h-28 overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200"
           >
-            <div class="flex gap-2">
-              <input type="checkbox" name="plataforma" id="plataforma" />
-              <label for="plataforma">Plataforma</label>
-            </div>
-            <div class="flex gap-2">
-              <input type="checkbox" name="plataforma" id="plataforma" />
-              <label for="plataforma">Plataforma</label>
-            </div>
-            <div class="flex gap-2">
-              <input type="checkbox" name="plataforma" id="plataforma" />
-              <label for="plataforma">Plataforma</label>
-            </div>
-            <div class="flex gap-2">
-              <input type="checkbox" name="plataforma" id="plataforma" />
-              <label for="plataforma">Plataforma</label>
-            </div>
-            <div class="flex gap-2">
-              <input type="checkbox" name="plataforma" id="plataforma" />
-              <label for="plataforma">Plataforma</label>
-            </div>
-            <div class="flex gap-2">
-              <input type="checkbox" name="plataforma" id="plataforma" />
-              <label for="plataforma">Plataforma</label>
-            </div>
+          {% for plt in platforms %}
+          <div class="flex gap-2">
+            <input type="checkbox" name="plataforma" id="plataforma" />
+            <label for="plataforma">{{ plt }}</label>
+          </div>
+          {% endfor %}
           </div>
         </div>
 
@@ -96,30 +78,12 @@
           <div
             class="px-3 py-1 bg-green-200 max-h-28 overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200"
           >
-            <div class="flex gap-2">
-              <input type="checkbox" name="plataforma" id="plataforma" />
-              <label for="plataforma">Plataforma</label>
-            </div>
-            <div class="flex gap-2">
-              <input type="checkbox" name="plataforma" id="plataforma" />
-              <label for="plataforma">Plataforma</label>
-            </div>
-            <div class="flex gap-2">
-              <input type="checkbox" name="plataforma" id="plataforma" />
-              <label for="plataforma">Plataforma</label>
-            </div>
-            <div class="flex gap-2">
-              <input type="checkbox" name="plataforma" id="plataforma" />
-              <label for="plataforma">Plataforma</label>
-            </div>
-            <div class="flex gap-2">
-              <input type="checkbox" name="plataforma" id="plataforma" />
-              <label for="plataforma">Plataforma</label>
-            </div>
-            <div class="flex gap-2">
-              <input type="checkbox" name="plataforma" id="plataforma" />
-              <label for="plataforma">Plataforma</label>
-            </div>
+          {% for gen in genres %}
+          <div class="flex gap-2">
+            <input type="checkbox" name="genero" id="genero" />
+            <label for="genero">{{ gen }}</label>
+          </div>
+          {% endfor %}
           </div>
         </div>
 
@@ -130,30 +94,12 @@
           <div
             class="px-3 py-1 bg-green-200 max-h-28 overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200"
           >
-            <div class="flex gap-2">
-              <input type="checkbox" name="plataforma" id="plataforma" />
-              <label for="plataforma">Plataforma</label>
-            </div>
-            <div class="flex gap-2">
-              <input type="checkbox" name="plataforma" id="plataforma" />
-              <label for="plataforma">Plataforma</label>
-            </div>
-            <div class="flex gap-2">
-              <input type="checkbox" name="plataforma" id="plataforma" />
-              <label for="plataforma">Plataforma</label>
-            </div>
-            <div class="flex gap-2">
-              <input type="checkbox" name="plataforma" id="plataforma" />
-              <label for="plataforma">Plataforma</label>
-            </div>
-            <div class="flex gap-2">
-              <input type="checkbox" name="plataforma" id="plataforma" />
-              <label for="plataforma">Plataforma</label>
-            </div>
-            <div class="flex gap-2">
-              <input type="checkbox" name="plataforma" id="plataforma" />
-              <label for="plataforma">Plataforma</label>
-            </div>
+          {% for year in years %}
+          <div class="flex gap-2">
+            <input type="checkbox" name="year_of_release" id="year_of_release" />
+            <label for="year_of_release">{{ year }}</label>
+          </div>
+          {% endfor %}
           </div>
         </div>
       </div>
@@ -169,6 +115,7 @@
             id="search"
             data-search
           />
+          
           <button
             class="bg-purple-700 p-3 rounded-lg text-white hover:bg-purple-400"
           >

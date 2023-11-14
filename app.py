@@ -110,10 +110,15 @@ def index():
 def developers():
     return render_template("developers.html")
 
-
-@app.route("/search-game")
+@app.route('/search-game')
 def searchGame():
-    return render_template("search_game.html")
+    print(request.args)
+    return render_template(
+        "search_game.html",
+        platforms=videoGamesManager.plataforms,
+        genres=videoGamesManager.genres,
+        years=videoGamesManager.year_of_releases,
+        )
 
 
 def get_games(offset=0, per_page=10):
