@@ -17,8 +17,9 @@ class Graph:
             }
 
     def add_edge(self, node_name1, node_name2, weight):
-        if node_name1 in self.nodes and node_name2 in self.nodes:
+        if node_name1 in self.nodes:
             self.nodes[node_name1]['edges'][node_name2] = weight
+        if node_name2 in self.nodes:
             self.nodes[node_name2]['edges'][node_name1] = weight
 
     def get_recommendations(self, node_name, max_recomendations, min_weight):

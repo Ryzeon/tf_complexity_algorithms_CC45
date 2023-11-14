@@ -39,6 +39,24 @@ class VideoGame:
     def to_string(self):
         return f'{self.name} {self.platforms} {self.year_of_release} {self.genres} {self.publisher} {self.users_platforms} {self.developer} {self.rating}'
 
+    def isInPlatform(self, platforms):
+        for platform in platforms:
+            if platform in self.platforms:
+                return True
+        return False
+
+    def isInGenre(self, genres):
+        for genre in genres:
+            if genre in self.genres:
+                return True
+        return False
+
+    def isInPublisher(self, publishers):
+        for publisher in publishers:
+            if publisher in self.publisher:
+                return True
+        return False
+
     def getDic(self):
         return {
             'id': self.id,

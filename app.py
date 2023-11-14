@@ -31,11 +31,15 @@ print(len(videoGamesManager.getVideoGames()))
 print("Loading graph...")
 start = time.time()
 videoGamesManager.loadGraph()
+# videoGamesManager.loadAndSaveAuxGraphs()
 fix_ms = time.time() - start
 fix_ms = round(fix_ms, 4)
-print("Total time to load graph: " + str(fix_ms) + " ms")
-print(f"Loaded graph with {len(videoGamesManager.grafo.nodes)} nodes")
-# videoGamesManager.grafo.saveGraph("normal_graph.json")
+print("Total time to load graphs: " + str(fix_ms) + " ms")
+print(f"Loaded main graph with {len(videoGamesManager.main_graph.nodes)} nodes")
+print(f"Loaded genres graph with {len(videoGamesManager.genres_graph.nodes)} nodes")
+print(f"Loaded platforms graph with {len(videoGamesManager.platforms_graph.nodes)} nodes")
+print(f"Loaded publishers graph with {len(videoGamesManager.publishers_graph.nodes)} nodes")
+# videoGamesManager.grafo.saveGraph("main_graph.json")
 
 randomGame = videoGamesManager.getRandomGame()
 
@@ -120,8 +124,8 @@ def game_details(game_name):
                                game_image=game_image,
                                game_video=game_video.embed_url,
                                game_title=game_video.title,
-                               related_games=videoGamesManager.grafo.get_recommendations(game_name, 10,
-                                                                                         RecommendationSearch.LOW.value)
+                               related_games=videoGamesManager.main_graph.get_recommendations(game_name, 10,
+                                                                                              RecommendationSearch.LOW.value)
                                )
     else:
         return "Juego no encontrado"
