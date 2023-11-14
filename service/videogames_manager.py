@@ -1,6 +1,7 @@
 import csv
 import os
 import random
+import json
 
 from model.videogame import VideoGame
 from model.grafo import Graph
@@ -20,11 +21,15 @@ class VideoGamesManager:
         self.genres = set()
         self.year_of_releases = set()
         self.publishers = set()
-        self.grafo = Graph()
+        self.main_graph = Graph()
+        self.genres_graph = Graph()
+        self.platforms_graph = Graph()
+        self.publishers_graph = Graph()
         self.coincidences_weight = {
-            'platform': 30,
-            'genre': 35,
-            'year_of_release': 10,
+            'name': 35,
+            'platform': 15,
+            'genre': 20,
+            'year_of_release': 5,
             'publisher': 10,
             'developer': 5,
             'rating': 10
@@ -53,6 +58,13 @@ class VideoGamesManager:
     def updateVideoGame(self, id, plataform, genre, user_count):
         self.videoGames[id].update(plataform, genre, user_count)
 
+    def getGamesWithMachName(self, name):
+        games = []
+        for videoGame in self.videoGames.values():
+            if name.lower() in videoGame.name.lower():
+                games.append(videoGame)
+        return games
+
     # Calculate the weight of the concidences
     def calcularPonderado(self, videoGame, videoGame2):
         ponderado = 0
@@ -71,6 +83,9 @@ class VideoGamesManager:
             ponderado += self.coincidences_weight['developer']
         if videoGame.rating == videoGame2.rating:
             ponderado += self.coincidences_weight['rating']
+        for videoGamest in videoGame.name.lower().split(" "):
+            if videoGamest in videoGame2.name.lower():
+                ponderado += self.coincidences_weight['name'] / len(videoGame.name.split(" "))
         return ponderado
 
     def loadGames(self):
@@ -79,9 +94,12 @@ class VideoGamesManager:
         with open(relative_path, newline='') as csvfile:
             reader = csv.DictReader(csvfile)
             for row in reader:
-                video_game = VideoGame(row['Name'], row['Platform'], row['Year_of_Release'], row['Genre'],
+                video_game = VideoGame(row['Name'].replace("/", "-"), row['Platform'], row['Year_of_Release'],
+                                       row['Genre'],
                                        row['Publisher'],
-                                       row['User_Count'], row['Developer'], row['Rating'])
+                                       row['User_Count'], row['Developer'], row['Rating'],
+                                       platforms=None, genres=None, users_platforms=None
+                                       )
                 if self.exitsInVideoGames(video_game.id):
                     self.updateVideoGame(video_game.id, row['Platform'], row['Genre'], row['User_Count'])
                 else:
@@ -93,18 +111,77 @@ class VideoGamesManager:
 
     def addGamesToGraph(self):
         for videoGame in self.videoGames.values():
-            self.grafo.add_node(videoGame.id, videoGame)
+            self.main_graph.add_node(videoGame.id, videoGame.id)
 
     def addConnections(self):
         for videoGame in self.videoGames.values():
             for videoGame2 in self.videoGames.values():
                 if videoGame.id != videoGame2.id:
                     ponderado = self.calcularPonderado(videoGame, videoGame2)
-                    self.grafo.add_edge(videoGame.id, videoGame2.id, ponderado)
+                    if ponderado > RecommendationSearch.MEDIUM.value:
+                        self.main_graph.add_edge(videoGame.id, videoGame2.id, ponderado)
+
+    def saveToJson(self):
+        jsonArray = []
+        for videoGame in self.videoGames.values():
+            jsonArray.append(videoGame.getDic())
+        with open('original_data.json', 'w') as outfile:
+            json.dump(jsonArray, outfile, indent=2)
+
+    def loadFromJson(self):
+        with open('original_data.json') as json_file:
+            data = json.load(json_file)
+            for videoGame in data:
+                self.addJsonGame(videoGame)
+
+    def addJsonGame(self, videoGameJson):
+        self.videoGames[videoGameJson['id']] = VideoGame(videoGameJson['id'], None, videoGameJson['year_of_release'],
+                                                         None, videoGameJson['publisher'], None,
+                                                         videoGameJson['developer'], videoGameJson['rating'],
+                                                         platforms=videoGameJson['platforms'],
+                                                         genres=videoGameJson['genres'],
+                                                         users_platforms=videoGameJson['users_platforms']
+                                                         )
+        for platform in videoGameJson['platforms']:
+            if len(platform) > 0:
+                self.plataforms.add(platform)
+        for genre in videoGameJson['genres']:
+            if len(genre) > 0:
+                self.genres.add(genre)
+        for platform in videoGameJson['platforms']:
+            if len(platform) > 0:
+                self.plataforms.add(platform)
+        self.publishers.add(videoGameJson['publisher'])
 
     def loadGraph(self):
-        self.addGamesToGraph()
-        self.addConnections()
+        self.main_graph.loadFromJson('main_graph.json')
+        self.genres_graph.loadFromJson('genres_graph.json')
+        self.platforms_graph.loadFromJson('platforms_graph.json')
+        self.publishers_graph.loadFromJson('publishers_graph.json')
+        # self.addGamesToGraph()
+        # self.addConnections()
+        # self.main_graph.saveGraph('main_graph.json')
+
+    def loadAndSaveAuxGraphs(self):
+        for publisher in self.publishers:
+            self.publishers_graph.add_node(publisher, publisher)
+
+        for genre in self.genres:
+            self.genres_graph.add_node(genre, genre)
+
+        for platform in self.plataforms:
+            self.platforms_graph.add_node(platform, platform)
+
+        for videoGame in self.videoGames.values():
+            self.publishers_graph.add_edge(videoGame.publisher, videoGame.id, 1)
+            for platform in videoGame.platforms:
+                self.platforms_graph.add_edge(platform, videoGame.id, 1)
+            for genre in videoGame.genres:
+                self.genres_graph.add_edge(genre, videoGame.id, 1)
+
+        self.genres_graph.saveGraph('genres_graph.json')
+        self.platforms_graph.saveGraph('platforms_graph.json')
+        self.publishers_graph.saveGraph('publishers_graph.json')
 
     def deleteRandomGame(self):
         randomGame = random.choice(list(self.videoGames.keys()))

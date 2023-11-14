@@ -16,39 +16,44 @@ load_dotenv()
 app = Flask(__name__)
 
 videoGamesManager = VideoGamesManager()  # Singleton
-# Calcualte ms to load
 start = time.time()
-videoGamesManager.loadGames()
+videoGamesManager.loadFromJson()
+# videoGamesManager.saveToJson()
 # Limit games to 2000 games
-videoGamesManager.limitGames(2000)
-print(len(videoGamesManager.getVideoGames()))
-videoGamesManager.loadGraph()
+# videoGamesManager.loadGames()
+# videoGamesManager.limitGames(5000)
+# videoGamesManager.saveToJson()
 fix_ms = time.time() - start
 fix_ms = round(fix_ms, 4)
 print(f'Total time to load: {fix_ms} ms')
+print(len(videoGamesManager.getVideoGames()))
+print("Loading graph...")
+start = time.time()
+videoGamesManager.loadGraph()
+# videoGamesManager.loadAndSaveAuxGraphs()
+fix_ms = time.time() - start
+fix_ms = round(fix_ms, 4)
+print("Total time to load graphs: " + str(fix_ms) + " ms")
+print(f"Loaded main graph with {len(videoGamesManager.main_graph.nodes)} nodes")
+print(f"Loaded genres graph with {len(videoGamesManager.genres_graph.nodes)} nodes")
+print(f"Loaded platforms graph with {len(videoGamesManager.platforms_graph.nodes)} nodes")
+print(f"Loaded publishers graph with {len(videoGamesManager.publishers_graph.nodes)} nodes")
+# videoGamesManager.grafo.saveGraph("main_graph.json")
 
-randomGame = videoGamesManager.getRandomGame()
+randomGame = videoGamesManager.getGamesWithMachName("pokemon")
+randomGame = random.choice(randomGame).id
 
 print(f'Random game: {randomGame}')
 print(f'Random game: {videoGamesManager.getVideoGame(randomGame).to_string()}')
 
-# recommendationSearch = videoGamesManager.grafo.get_recommendations(
-#     randomGame, 10, RecommendationSearch.LOW.value)
-# for recommendation in recommendationSearch:
-#     print('------------------')
-#     print(
-#         f'Recommendation: {videoGamesManager.getVideoGame(recommendation[0]).to_string()}')
-#     print(f'Weight: {recommendation[1]}')
-#     print('------------------')
-
-x = get_video_info(randomGame, 10)
-
-
-#
-# y = get_images_from_google_image(randomGame, 10)
-# print(x)
-# print(y)
-
+recommendationSearch = videoGamesManager.main_graph.get_recommendations_invert(
+    randomGame, 10)
+print(len(recommendationSearch))
+for recommendation in recommendationSearch:
+    print("-"*50)
+    print(f'Conection: {recommendation[0]} - Weight: {recommendation[1]}')
+    print(f'Game: {videoGamesManager.getVideoGame(recommendation[0]).to_string()}')
+    print("-" * 50)
 
 # d_graph = nx.Graph()
 # d_graph.add_node(videoGamesManager.getVideoGame(randomGame).id)
@@ -110,8 +115,8 @@ def game_details(game_name):
                                game_image=game_image,
                                game_video=game_video.embed_url,
                                game_title=game_video.title,
-                               related_games=videoGamesManager.grafo.get_recommendations(game_name, 10,
-                                                                                         RecommendationSearch.LOW.value)
+                               related_games=videoGamesManager.main_graph.get_recommendations(game_name, 10,
+                                                                                              RecommendationSearch.LOW.value)
                                )
     else:
         return "Juego no encontrado"
