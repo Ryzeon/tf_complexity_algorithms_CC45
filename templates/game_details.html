@@ -89,12 +89,16 @@
         <ul class="grid grid-cols-3 gap-6">
           {% for game in related_games %}
           <li
-            class="game-item bg-purple-950 p-6 rounded-xl h-[200px] grid place-items-center"
+            class="bg-purple-950 p-6 rounded-xl h-[200px] grid place-items-center"
             id="related-game"
           >
-            <a class="text-white text-lg" href="/game/{{ game[0] }}"
-              >{{ game[0] }}</a
-            >
+            <a class="text-white text-lg relative" href="/game/{{ game[0] }}"
+              >{{ game[0] }}
+              <img
+                class="absolute"
+                src="https://img.freepik.com/fotos-premium/ilustracion-joystick-gamepad-controlador-juegos-cyberpunk_691560-5812.jpg"
+              />
+            </a>
           </li>
           {% endfor %}
         </ul>

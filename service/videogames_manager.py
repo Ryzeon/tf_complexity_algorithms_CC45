@@ -2,6 +2,7 @@ import csv
 import os
 import random
 import json
+from re import S
 
 from model.videogame import VideoGame
 from model.grafo import Graph
@@ -26,13 +27,13 @@ class VideoGamesManager:
         self.platforms_graph = Graph()
         self.publishers_graph = Graph()
         self.coincidences_weight = {
-            'name': 35,
-            'platform': 15,
-            'genre': 20,
-            'year_of_release': 5,
+            'name': 60,
+            'platform': 4,
+            'genre': 15,
+            'year_of_release': 3,
             'publisher': 10,
             'developer': 5,
-            'rating': 10
+            'rating': 3
         }
 
     def exitsInVideoGames(self, id):
@@ -133,6 +134,22 @@ class VideoGamesManager:
             data = json.load(json_file)
             for videoGame in data:
                 self.addJsonGame(videoGame)
+        self.year_of_releases = list(self.year_of_releases)
+        self.publishers = list(self.publishers)
+        self.genres = list(self.genres)
+        self.plataforms = list(self.plataforms)
+        self.year_of_releases.sort()
+        self.publishers.sort()
+        self.genres.sort()
+        self.plataforms.sort()
+        
+    def get_recommendations_with_filters(self, node_src, gender_filter, platform_filter, year_filter, max_recommendations):
+        if node_src not in self.main_graph.nodes:
+            return []
+        # if gender filter is empty allow all
+        # if platform filter is empty allow all
+        # if year filter is empty allow all
+        
 
     def addJsonGame(self, videoGameJson):
         self.videoGames[videoGameJson['id']] = VideoGame(videoGameJson['id'], None, videoGameJson['year_of_release'],
@@ -152,6 +169,7 @@ class VideoGamesManager:
             if len(platform) > 0:
                 self.plataforms.add(platform)
         self.publishers.add(videoGameJson['publisher'])
+        self.year_of_releases.add(videoGameJson['year_of_release'])
 
     def loadGraph(self):
         self.main_graph.loadFromJson('main_graph.json')

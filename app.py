@@ -1,4 +1,5 @@
 import random
+import re
 import time
 
 # import requests
@@ -10,6 +11,8 @@ from service.videogames_manager import RecommendationSearch
 from utils.utils import get_video_info
 from utils.utils import get_images_from_google_image
 from dotenv import load_dotenv
+import networkx as nx
+import matplotlib.pyplot as plt
 
 load_dotenv()
 
@@ -48,25 +51,42 @@ print(f'Random game: {videoGamesManager.getVideoGame(randomGame).to_string()}')
 
 recommendationSearch = videoGamesManager.main_graph.get_recommendations_invert(
     randomGame, 10)
-print(len(recommendationSearch))
+
 for recommendation in recommendationSearch:
     print("-"*50)
     print(f'Conection: {recommendation[0]} - Weight: {recommendation[1]}')
     print(f'Game: {videoGamesManager.getVideoGame(recommendation[0]).to_string()}')
     print("-" * 50)
+    
+G = nx.Graph()
+for recommendation in recommendationSearch:
+    G.add_edge(videoGamesManager.getVideoGame(randomGame).id, recommendation[0], weight=recommendation[1])
 
-# d_graph = nx.Graph()
-# d_graph.add_node(videoGamesManager.getVideoGame(randomGame).id)
-# for recommendation in recommendationSearch:
-#     d_graph.add_node(recommendation[0])
-#     d_graph.add_edge(videoGamesManager.getVideoGame(randomGame).id, recommendation[0], weight=recommendation[1])
-# pos = nx.spring_layout(d_graph)
-# nx.draw(d_graph, pos, with_labels=True, node_size=10, font_color="black", font_size=1)
-# etiquetas_aristas = nx.get_edge_attributes(d_graph, "weight")
-# nx.draw_networkx_edge_labels(d_graph, pos, edge_labels=etiquetas_aristas)
-# plt.show()
-#
-# print("Done")
+elarge = [(u, v) for (u, v, d) in G.edges(data=True) if d["weight"] > 40]
+esmall = [(u, v) for (u, v, d) in G.edges(data=True) if d["weight"] <= 40]
+
+pos = nx.spring_layout(G, seed=7)  # positions for all nodes - seed for reproducibility
+
+# nodes
+nx.draw_networkx_nodes(G, pos, node_size=1000)
+
+# edges
+nx.draw_networkx_edges(G, pos, edgelist=elarge, width=6)
+nx.draw_networkx_edges(
+    G, pos, edgelist=esmall, width=6, alpha=0.5, edge_color="b", style="dashed"
+)
+
+# node labels
+nx.draw_networkx_labels(G, pos, font_size=10, font_family="sans-serif", font_color="blue")
+# edge weight labels
+edge_labels = nx.get_edge_attributes(G, "weight")
+nx.draw_networkx_edge_labels(G, pos, edge_labels)
+
+ax = plt.gca()
+ax.margins(0.05)
+plt.axis("off")
+plt.tight_layout()
+plt.savefig("graph.png")
 
 
 @app.route('/')
@@ -91,10 +111,27 @@ def index():
 def developers():
     return render_template("developers.html")
 
-
-@app.route("/search-game")
+@app.route('/search-game')
 def searchGame():
-    return render_template("search_game.html")
+    game_to_search = request.args.get('game_to_search', type=str, default="")
+    filter_gender_query = request.args.get('gender[]', type=list, default="")
+    filter_platform_query = request.args.get('platform[]', type=list, default="")
+    filter_year_query = request.args.get('year[]', type=list, default="") 
+    game = videoGamesManager.getGamesWithMachName(game_to_search)
+    if len(game) > 0:
+        game = game[0].id
+    else:
+        game = randomGame
+    releated_games = videoGamesManager.main_graph.get_recommendations_invert(game, 10)
+    print(request.args)
+    return render_template(
+        "search_game.html",
+        platforms=videoGamesManager.plataforms,
+        genres=videoGamesManager.genres,
+        years=videoGamesManager.year_of_releases,
+        related_games = releated_games,
+        game=game
+        )
 
 
 def get_games(offset=0, per_page=10):

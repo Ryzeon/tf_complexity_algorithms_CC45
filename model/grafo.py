@@ -1,4 +1,3 @@
-import heapq
 import json
 
 
@@ -31,7 +30,8 @@ class Graph:
                     recomendations.append((edge, self.nodes[node_name]['edges'][edge]))
             recomendations.sort(key=lambda x: x[1], reverse=True)
             return recomendations[:max_recomendations]
-        return []
+        return []    
+        
 
     def get_recommendations_invert(self, node_src, max_recommendations):
         if node_src not in self.nodes:
