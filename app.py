@@ -123,8 +123,11 @@ def developers():
 def searchGame():
     game_to_search = request.args.get('search', type=str, default="")
     filter_gender_query = request.args.get('genero', type=str, default="").split(",")
+    filter_gender_query.remove("")
     filter_platform_query = request.args.get('plataforma', type=str, default="").split(",")
+    filter_platform_query.remove("")
     filter_year_query = request.args.get('year_of_release', type=str, default="").split(",")
+    filter_year_query.remove("")
     amount = request.args.get('amount', type=int, default=10)
     print(filter_year_query)
     print(filter_platform_query)
