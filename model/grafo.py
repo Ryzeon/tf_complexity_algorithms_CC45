@@ -34,6 +34,7 @@ class Graph:
 
     def get_recommendations_invert(self, node_src, max_recommendations):
         if node_src not in self.nodes:
+            print("nada")
             return []
 
         visited = set()
@@ -53,9 +54,9 @@ class Graph:
                     queue.append((weight, neighbor))
 
             sorted_neighbors = sorted(queue, key=lambda x: x[0], reverse=True)
-            recommendations = [(neighbor, weight) for weight, neighbor in sorted_neighbors[:max_recommendations]]
-
-        return recommendations
+            for neighbor in sorted_neighbors:
+                recommendations.append((neighbor[1], neighbor[0]))
+        return recommendations[:max_recommendations]
 
     def get_object(self, node_name):
         if node_name in self.nodes:
@@ -65,7 +66,7 @@ class Graph:
     def get_edges(self, node_name):
         if node_name in self.nodes:
             return self.nodes[node_name]['edges']
-        return []
+        return {}
 
     def saveGraph(self, graph_name):
         with open(graph_name, 'w') as outfile:

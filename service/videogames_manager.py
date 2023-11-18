@@ -152,7 +152,37 @@ class VideoGamesManager:
         if len(gender_filter) < 1 and len(platform_filter) < 1 and len(year_filter) < 1:
             return self.main_graph.get_recommendations_invert(node_src, max_recommendations)
         # Crear nuevo grfo a partir de los grafos de genero, plataforma y publisher
-        return self.main_graph.get_recommendations(node_src, max_recommendations, 90)
+        filter_graph = Graph()
+        filter_graph.add_node(node_src, node_src)
+        for gender in gender_filter:
+            for k,v in self.genres_graph.get_edges(gender).items():
+                game_g = self.getVideoGame(k)
+                if len(platform_filter) > 0 and len(set(game_g.platforms).intersection(platform_filter)) < 1:
+                    continue
+                if len(year_filter) > 0 and game_g.year_of_release not in year_filter:
+                    continue
+                filter_graph.add_node(k, k)
+                filter_graph.add_edge(node_src, k, self.calcularPonderado(self.getVideoGame(node_src), self.getVideoGame(k)))
+        for platform in platform_filter:
+            for k,v in self.platforms_graph.get_edges(platform).items():
+                game_p = self.getVideoGame(k)
+                if len(gender_filter) > 0 and len(set(game_p.genres).intersection(gender_filter)) < 1:
+                    continue
+                if len(year_filter) > 0 and game_p.year_of_release not in year_filter:
+                    continue
+                filter_graph.add_node(k, k)
+                filter_graph.add_edge(node_src, k, self.calcularPonderado(self.getVideoGame(node_src), self.getVideoGame(k)))
+        for year in year_filter:
+            for k,v in self.year_of_releases_graph.get_edges(year).items():
+                game_y = self.getVideoGame(k)
+                if len(gender_filter) > 0 and len(set(game_y.genres).intersection(gender_filter)) < 1:
+                    continue
+                if len(platform_filter) > 0 and len(set(game_y.platforms).intersection(platform_filter)) < 1:
+                    continue
+                filter_graph.add_node(k, k)
+                filter_graph.add_edge(node_src, k, self.calcularPonderado(self.getVideoGame(node_src), self.getVideoGame(k)))
+        # print(filter_graph.nodes)
+        return filter_graph.get_recommendations_invert(node_src, max_recommendations)
 
     def addJsonGame(self, videoGameJson):
         self.videoGames[videoGameJson['id']] = VideoGame(videoGameJson['id'], None, videoGameJson['year_of_release'],
