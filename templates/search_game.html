@@ -4,6 +4,7 @@
     <meta charset="UTF-8"/>
     <title>GameView</title>
     <link rel="stylesheet" href="../static/css/output.css"/>
+    <script src="../static/js/search_game.js" defer></script>
     <link rel="preconnect" href="https://fonts.googleapis.com"/>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
     <link
@@ -61,8 +62,9 @@
                 >
                     {% for plt in platforms %}
                         <div class="flex gap-2">
-                            <input type="checkbox" name="plataforma" id="plataforma"/>
-                            <label for="plataforma">{{ plt }}</label>
+                            <input type="checkbox" name="plataforma" id="plataform_{{ plt }}"
+                                   {% if plt in query_param_platforms %}checked{% endif %}/>
+                            <label for="plataforma{{ loop.index }}">{{ plt }}</label>
                         </div>
                     {% endfor %}
                 </div>
@@ -73,10 +75,11 @@
                 <div
                         class="px-3 py-1 bg-green-200 w-full max-h-28 overflow-y-scroll scrollbar-thin scrollbar-thumb-green-500 scrollbar-track-green-100"
                 >
-                    {% for plt in platforms %}
+                    {% for plt in genres %}
                         <div class="flex gap-2">
-                            <input type="checkbox" name="genero" id="genero"/>
-                            <label for="genero">{{ plt }}</label>
+                            <input type="checkbox" name="genero" id="genre_{{ plt }}"
+                                   {% if plt in query_param_platforms %}checked{% endif %}/>
+                            <label for="genero{{ loop.index }}">{{ plt }}</label>
                         </div>
                     {% endfor %}
                 </div>
@@ -94,9 +97,10 @@
                             <input
                                     type="checkbox"
                                     name="year_of_release"
-                                    id="year_of_release"
+                                    id="year_of_release_{{ year }}"
+                                    {% if year in query_param_years %}checked{% endif %}
                             />
-                            <label for="year_of_release">{{ year }}</label>
+                            <label for="year_of_release_{{ year }}">{{ year }}</label>
                         </div>
                     {% endfor %}
                 </div>
@@ -104,6 +108,7 @@
 
             <button
                     class="bg-purple-700 p-3 rounded-lg text-white hover:bg-purple-400 w-full"
+                    id="filter_btn"
             >
                 Filtrar
             </button>
@@ -123,6 +128,7 @@
                     />
                     <button
                             class="bg-purple-700 px-6 py-2 rounded-lg text-white hover:bg-purple-400"
+                            id="search_btn"
                     >
                         Buscar
                     </button>
@@ -180,7 +186,7 @@
                             <li class="rounded-lg bg-purple-900 px-6 py-3">
                                 <a
                                         class="text-white flex items-center gap-10"
-                                        href="/search-game"
+                                        href="/game/{{ game.name }}"
                                 >
                                     <p class="text-white">
                                         {{ i }}
@@ -231,20 +237,6 @@
                         />
                     </div>
                 </div>
-
-                <script>
-                    const btn = document.getElementById("btn");
-                    const img = document.getElementById("img");
-                    btn.addEventListener("click", () => {
-                        if (img.style.display === "none") {
-                            img.style.display = "block";
-                            btn.innerHTML = "Ocultar";
-                        } else {
-                            img.style.display = "none";
-                            btn.innerHTML = "Mostrar Grafo";
-                        }
-                    });
-                </script>
             </section>
         </div>
     </div>

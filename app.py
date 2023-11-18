@@ -120,14 +120,19 @@ def developers():
 
 @app.route('/search-game')
 def searchGame():
-    game_to_search = request.args.get('game_to_search', type=str, default="")
+    game_to_search = request.args.get('search', type=str, default="")
     filter_gender_query = request.args.get('gender', type=list, default="")
     filter_platform_query = request.args.get('platform', type=list, default="")
     filter_year_query = request.args.get('year', type=list, default="")
     amount = request.args.get('amount', type=int, default=10)
     game = videoGamesManager.getGamesWithMachName(game_to_search)
     if len(game_to_search) > 0:
-        game = game[0].id
+        if len(game) > 0:
+            game = random.choice(game).id
+            print("Se encontro el juego")
+        else:
+            game = videoGamesManager.getRandomVideoGame().id
+            print("No se encontro el juego")
     else:
         game = videoGamesManager.getRandomVideoGame().id
         print("No se encontro el juego")
@@ -162,7 +167,7 @@ def game_details(game_name):
     if videoGamesManager.exitsInVideoGames(game_name):
         game = videoGamesManager.getVideoGame(game_name)
         # image_response = requests.get("https://picsum.photos/400/300")
-        game_video = random.choice(get_video_info(game_name, 10))
+        game_video = random.choice(get_video_info(game_name + " gameplay", 10))
         print(game_video.embed_url)
         print(game_video.title)
         game_image = random.choice(get_images_from_google_image(game_name, 10))
@@ -171,8 +176,7 @@ def game_details(game_name):
                                game_image=game_image,
                                game_video=game_video.embed_url,
                                game_title=game_video.title,
-                               related_games=videoGamesManager.main_graph.get_recommendations(game_name, 10,
-                                                                                              RecommendationSearch.LOW.value)
+                               related_games=videoGamesManager.main_graph.get_recommendations_invert(game_name, 10)
                                )
     else:
         return "Juego no encontrado"
