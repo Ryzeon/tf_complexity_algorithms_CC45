@@ -40,6 +40,7 @@ print(f"Loaded main graph with {len(videoGamesManager.main_graph.nodes)} nodes")
 print(f"Loaded genres graph with {len(videoGamesManager.genres_graph.nodes)} nodes")
 print(f"Loaded platforms graph with {len(videoGamesManager.platforms_graph.nodes)} nodes")
 print(f"Loaded publishers graph with {len(videoGamesManager.publishers_graph.nodes)} nodes")
+print(f"Loaded year of releases graph with {len(videoGamesManager.year_of_releases_graph.nodes)} nodes")
 
 
 # videoGamesManager.grafo.saveGraph("main_graph.json")
@@ -121,10 +122,13 @@ def developers():
 @app.route('/search-game')
 def searchGame():
     game_to_search = request.args.get('search', type=str, default="")
-    filter_gender_query = request.args.get('gender', type=list, default="")
-    filter_platform_query = request.args.get('platform', type=list, default="")
-    filter_year_query = request.args.get('year', type=list, default="")
+    filter_gender_query = request.args.get('genero', type=str, default="").split(",")
+    filter_platform_query = request.args.get('plataforma', type=str, default="").split(",")
+    filter_year_query = request.args.get('year_of_release', type=str, default="").split(",")
     amount = request.args.get('amount', type=int, default=10)
+    print(filter_year_query)
+    print(filter_platform_query)
+    print(filter_gender_query)
     game = videoGamesManager.getGamesWithMachName(game_to_search)
     if len(game_to_search) > 0:
         if len(game) > 0:
