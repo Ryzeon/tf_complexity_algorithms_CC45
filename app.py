@@ -212,7 +212,7 @@ def game_details(game_name):
     if app.videoGamesManager.exitsInVideoGames(game_name):
         game = app.videoGamesManager.getVideoGame(game_name)
         # image_response = requests.get("https://picsum.photos/400/300")
-        game_video = random.choice(get_video_info(game_name + " gameplay", 10))
+        game_video = random.choice(get_video_info(game_name + f"gameplay {random.choice(game.platforms)}", 10))
         print(game_video.embed_url)
         print(game_video.title)
         game_image = random.choice(get_images_from_google_image(game_name, 10))
