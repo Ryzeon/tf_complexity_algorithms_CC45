@@ -170,7 +170,7 @@ def searchGame():
     game = app.videoGamesManager.getGamesWithMachName(game_to_search)
     if len(game_to_search) > 0:
         if len(game) > 0:
-            game = random.choice(game).id
+            game = game[0].id
             print("Se encontro el juego")
         else:
             game = app.videoGamesManager.getRandomVideoGame().id
