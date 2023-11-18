@@ -10,12 +10,12 @@
       rel="stylesheet"
     />
     <style>
+      #related-game {
+      }
+
       #related-game:hover {
         transform: scale(1.1);
-        opacity: 0.8;
-        transition:
-          transform 0.5s ease-in-out,
-          opacity 0.5s ease-in-out;
+        transition: transform 0.5s ease-in-out;
       }
     </style>
   </head>
@@ -89,15 +89,18 @@
         <ul class="grid grid-cols-3 gap-6">
           {% for game in related_games %}
           <li
-            class="bg-purple-950 p-6 rounded-xl h-[200px] grid place-items-center"
+            class="flex items-center justify-center w-[200px] h-[200px]"
             id="related-game"
           >
-            <a class="text-white text-lg relative" href="/game/{{ game[0] }}"
-              >{{ game[0] }}
-              <img
-                class="absolute"
-                src="https://img.freepik.com/fotos-premium/ilustracion-joystick-gamepad-controlador-juegos-cyberpunk_691560-5812.jpg"
-              />
+            <a
+              class="rounded-lg w-full h-full bg-[url('https://img.freepik.com/fotos-premium/ilustracion-joystick-gamepad-controlador-juegos-cyberpunk_691560-5812.jpg')] bg-no-repeat bg-[length:100%_100%]"
+              href="/game/{{ game[0] }}"
+            >
+              <div
+                class="p-3 w-full h-full text-white flex items-center justify-center"
+              >
+                <p class="text-xl font-bold"><strong>{{ game[0] }}</strong></p>
+              </div>
             </a>
           </li>
           {% endfor %}
