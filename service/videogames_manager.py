@@ -56,6 +56,9 @@ class VideoGamesManager:
     def getVideoGame(self, id):
         return self.videoGames[id]
 
+    def getRandomVideoGame(self):
+        return random.choice(list(self.videoGames.values()))
+
     def updateVideoGame(self, id, plataform, genre, user_count):
         self.videoGames[id].update(plataform, genre, user_count)
 
@@ -142,14 +145,11 @@ class VideoGamesManager:
         self.publishers.sort()
         self.genres.sort()
         self.plataforms.sort()
-        
-    def get_recommendations_with_filters(self, node_src, gender_filter, platform_filter, year_filter, max_recommendations):
-        if node_src not in self.main_graph.nodes:
-            return []
-        # if gender filter is empty allow all
-        # if platform filter is empty allow all
-        # if year filter is empty allow all
-        
+
+    def get_recommendations_with_filters(self, node_src, gender_filter, platform_filter, year_filter,
+                                         max_recommendations):
+        if len(gender_filter) < 1 and len(platform_filter) < 1 and len(year_filter) < 1:
+            return self.main_graph.get_recommendations_invert(node_src, max_recommendations)
 
     def addJsonGame(self, videoGameJson):
         self.videoGames[videoGameJson['id']] = VideoGame(videoGameJson['id'], None, videoGameJson['year_of_release'],

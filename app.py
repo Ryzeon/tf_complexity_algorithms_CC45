@@ -1,5 +1,4 @@
 import random
-import re
 import time
 
 # import requests
@@ -41,52 +40,59 @@ print(f"Loaded main graph with {len(videoGamesManager.main_graph.nodes)} nodes")
 print(f"Loaded genres graph with {len(videoGamesManager.genres_graph.nodes)} nodes")
 print(f"Loaded platforms graph with {len(videoGamesManager.platforms_graph.nodes)} nodes")
 print(f"Loaded publishers graph with {len(videoGamesManager.publishers_graph.nodes)} nodes")
+
+
 # videoGamesManager.grafo.saveGraph("main_graph.json")
 
-randomGame = videoGamesManager.getGamesWithMachName("pokemon")
-randomGame = random.choice(randomGame).id
+# randomGame = videoGamesManager.getGamesWithMachName("pokemon")
+# randomGame = random.choice(randomGame).id
+#
+# print(f'Random game: {randomGame}')
+# print(f'Random game: {videoGamesManager.getVideoGame(randomGame).to_string()}')
+#
+# recommendationSearch = videoGamesManager.main_graph.get_recommendations_invert(
+#     randomGame, 10)
+#
+# for recommendation in recommendationSearch:
+#     print("-" * 50)
+#     print(f'Conection: {recommendation[0]} - Weight: {recommendation[1]}')
+#     print(f'Game: {videoGamesManager.getVideoGame(recommendation[0]).to_string()}')
+#     print("-" * 50)
 
-print(f'Random game: {randomGame}')
-print(f'Random game: {videoGamesManager.getVideoGame(randomGame).to_string()}')
+def generate_and_save_graph(game, recomendations):
+    # reset previous graph
+    plt.clf()
 
-recommendationSearch = videoGamesManager.main_graph.get_recommendations_invert(
-    randomGame, 10)
+    G = nx.Graph()
+    for recommendation in recomendations:
+        G.add_edge(videoGamesManager.getVideoGame(game).id, recommendation[0], weight=
+        round(int(recommendation[1]), 2))
 
-for recommendation in recommendationSearch:
-    print("-"*50)
-    print(f'Conection: {recommendation[0]} - Weight: {recommendation[1]}')
-    print(f'Game: {videoGamesManager.getVideoGame(recommendation[0]).to_string()}')
-    print("-" * 50)
-    
-G = nx.Graph()
-for recommendation in recommendationSearch:
-    G.add_edge(videoGamesManager.getVideoGame(randomGame).id, recommendation[0], weight=recommendation[1])
+    elarge = [(u, v) for (u, v, d) in G.edges(data=True) if d["weight"] > 40]
+    esmall = [(u, v) for (u, v, d) in G.edges(data=True) if d["weight"] <= 40]
 
-elarge = [(u, v) for (u, v, d) in G.edges(data=True) if d["weight"] > 40]
-esmall = [(u, v) for (u, v, d) in G.edges(data=True) if d["weight"] <= 40]
+    pos = nx.spring_layout(G, seed=7)  # positions for all nodes - seed for reproducibility
 
-pos = nx.spring_layout(G, seed=7)  # positions for all nodes - seed for reproducibility
+    # nodes
+    nx.draw_networkx_nodes(G, pos, node_size=1000)
 
-# nodes
-nx.draw_networkx_nodes(G, pos, node_size=1000)
+    # edges
+    nx.draw_networkx_edges(G, pos, edgelist=elarge, width=6)
+    nx.draw_networkx_edges(
+        G, pos, edgelist=esmall, width=6, alpha=0.5, edge_color="b", style="dashed"
+    )
 
-# edges
-nx.draw_networkx_edges(G, pos, edgelist=elarge, width=6)
-nx.draw_networkx_edges(
-    G, pos, edgelist=esmall, width=6, alpha=0.5, edge_color="b", style="dashed"
-)
+    # node labels
+    nx.draw_networkx_labels(G, pos, font_size=10, font_family="sans-serif", font_color="blue")
+    # edge weight labels
+    edge_labels = nx.get_edge_attributes(G, "weight")
+    nx.draw_networkx_edge_labels(G, pos, edge_labels)
 
-# node labels
-nx.draw_networkx_labels(G, pos, font_size=10, font_family="sans-serif", font_color="blue")
-# edge weight labels
-edge_labels = nx.get_edge_attributes(G, "weight")
-nx.draw_networkx_edge_labels(G, pos, edge_labels)
-
-ax = plt.gca()
-ax.margins(0.05)
-plt.axis("off")
-plt.tight_layout()
-plt.savefig("graph.png")
+    ax = plt.gca()
+    ax.margins(0.05)
+    plt.axis("off")
+    plt.tight_layout()
+    plt.savefig("static/img/graph.png")
 
 
 @app.route('/')
@@ -111,27 +117,40 @@ def index():
 def developers():
     return render_template("developers.html")
 
+
 @app.route('/search-game')
 def searchGame():
     game_to_search = request.args.get('game_to_search', type=str, default="")
-    filter_gender_query = request.args.get('gender[]', type=list, default="")
-    filter_platform_query = request.args.get('platform[]', type=list, default="")
-    filter_year_query = request.args.get('year[]', type=list, default="") 
+    filter_gender_query = request.args.get('gender', type=list, default="")
+    filter_platform_query = request.args.get('platform', type=list, default="")
+    filter_year_query = request.args.get('year', type=list, default="")
+    amount = request.args.get('amount', type=int, default=10)
     game = videoGamesManager.getGamesWithMachName(game_to_search)
-    if len(game) > 0:
+    if len(game_to_search) > 0:
         game = game[0].id
     else:
-        game = randomGame
-    releated_games = videoGamesManager.main_graph.get_recommendations_invert(game, 10)
-    print(request.args)
+        game = videoGamesManager.getRandomVideoGame().id
+        print("No se encontro el juego")
+
+    print(game)
+    related_games = videoGamesManager.get_recommendations_with_filters(game, filter_gender_query,
+                                                                       filter_platform_query, filter_year_query,
+                                                                       amount)
+    # map game and related games in a map int, game
+    games = {"➤": videoGamesManager.getVideoGame(game)}
+    for i in range(len(related_games)):
+        games[str(i + 1)] = videoGamesManager.getVideoGame(related_games[i][0])
+
+    generate_and_save_graph(game, related_games)
+
     return render_template(
         "search_game.html",
         platforms=videoGamesManager.plataforms,
         genres=videoGamesManager.genres,
         years=videoGamesManager.year_of_releases,
-        related_games = releated_games,
-        game=game
-        )
+        games=games,
+        graph="graph.png"
+    )
 
 
 def get_games(offset=0, per_page=10):

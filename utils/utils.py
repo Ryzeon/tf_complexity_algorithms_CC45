@@ -13,7 +13,7 @@ class Video:
 
 
 def get_video_info(query, limit=10):
-    API_KEY = os.getenv("GOOGLE_API")
+    API_KEY = getRandomAPIKey()
     url = f"https://www.googleapis.com/youtube/v3/search"
     data = {
         "key": API_KEY,
@@ -22,6 +22,9 @@ def get_video_info(query, limit=10):
         "max_results": limit
     }
     r = requests.get(url, params=data)
+    if r.status_code == 403:
+        print("API KEY EXPIRED", API_KEY)
+        return get_video_info(query, limit)
     j = r.json()
     items = j["items"]
     videos = []
@@ -34,6 +37,11 @@ def get_video_info(query, limit=10):
             video = Video(title, url, embed)
             videos.append(video)
     return videos
+
+
+def getRandomAPIKey():
+    random_num = random.randint(1, 5)
+    return os.getenv(f"GOOGLE_API_{random_num}")
 
 
 def get_random_video_info(query):
