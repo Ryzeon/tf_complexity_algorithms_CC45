@@ -51,8 +51,17 @@ class VideoGamesManager:
     def getVideoGames(self):
         return self.videoGames.items()
 
-    def getArrayVideoGames(self):
-        return list(self.videoGames.values())
+    def getArrayVideoGames(self, platform, genre, year_of_release):
+        videoGames = []
+        for videoGame in self.videoGames.values():
+            if platform != "Todas" and platform not in videoGame.platforms:
+                continue
+            if genre != "Todos" and genre not in videoGame.genres:
+                continue
+            if year_of_release != "Todos" and year_of_release != videoGame.year_of_release:
+                continue
+            videoGames.append(videoGame)
+        return videoGames
 
     def getVideoGame(self, id):
         return self.videoGames[id]
@@ -155,32 +164,35 @@ class VideoGamesManager:
         filter_graph = Graph()
         filter_graph.add_node(node_src, node_src)
         for gender in gender_filter:
-            for k,v in self.genres_graph.get_edges(gender).items():
+            for k, v in self.genres_graph.get_edges(gender).items():
                 game_g = self.getVideoGame(k)
                 if len(platform_filter) > 0 and len(set(game_g.platforms).intersection(platform_filter)) < 1:
                     continue
                 if len(year_filter) > 0 and game_g.year_of_release not in year_filter:
                     continue
                 filter_graph.add_node(k, k)
-                filter_graph.add_edge(node_src, k, self.calcularPonderado(self.getVideoGame(node_src), self.getVideoGame(k)))
+                filter_graph.add_edge(node_src, k,
+                                      self.calcularPonderado(self.getVideoGame(node_src), self.getVideoGame(k)))
         for platform in platform_filter:
-            for k,v in self.platforms_graph.get_edges(platform).items():
+            for k, v in self.platforms_graph.get_edges(platform).items():
                 game_p = self.getVideoGame(k)
                 if len(gender_filter) > 0 and len(set(game_p.genres).intersection(gender_filter)) < 1:
                     continue
                 if len(year_filter) > 0 and game_p.year_of_release not in year_filter:
                     continue
                 filter_graph.add_node(k, k)
-                filter_graph.add_edge(node_src, k, self.calcularPonderado(self.getVideoGame(node_src), self.getVideoGame(k)))
+                filter_graph.add_edge(node_src, k,
+                                      self.calcularPonderado(self.getVideoGame(node_src), self.getVideoGame(k)))
         for year in year_filter:
-            for k,v in self.year_of_releases_graph.get_edges(year).items():
+            for k, v in self.year_of_releases_graph.get_edges(year).items():
                 game_y = self.getVideoGame(k)
                 if len(gender_filter) > 0 and len(set(game_y.genres).intersection(gender_filter)) < 1:
                     continue
                 if len(platform_filter) > 0 and len(set(game_y.platforms).intersection(platform_filter)) < 1:
                     continue
                 filter_graph.add_node(k, k)
-                filter_graph.add_edge(node_src, k, self.calcularPonderado(self.getVideoGame(node_src), self.getVideoGame(k)))
+                filter_graph.add_edge(node_src, k,
+                                      self.calcularPonderado(self.getVideoGame(node_src), self.getVideoGame(k)))
         # print(filter_graph.nodes)
         return filter_graph.get_recommendations_invert(node_src, max_recommendations)
 

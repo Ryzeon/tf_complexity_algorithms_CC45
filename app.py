@@ -58,6 +58,9 @@ def load_data_and_graph():
 
 with app.app_context():
     load_data_and_graph()
+    app.lastQuery = ("Todas", "Todos", "Todos")
+    app.games = app.videoGamesManager.getArrayVideoGames("Todas", "Todos", "Todos")
+
 
 # videoGamesManager.grafo.saveGraph("main_graph.json")
 
@@ -121,14 +124,17 @@ def generate_and_save_graph(game, recomendations):
 
 @app.route("/")
 def index():
+    platform = request.args.get("plataforma", type=str, default="Todas")
+    genre = request.args.get("genero", type=str, default="Todos")
+    year = request.args.get("year_of_release", type=str, default="Todos")
     page = request.args.get("page", type=int, default=1)
     per_page = 10  # Cantidad de juegos por página
     offset = (page - 1) * per_page
-    games = get_games(offset, per_page)
+    games = get_games(offset, per_page, platform, genre, year)
 
     pagination = Pagination(
         page=page,
-        total=len(app.videoGamesManager.videoGames),
+        total=len(app.games),
         per_page=per_page,
         record_name="games",
     )
@@ -156,7 +162,7 @@ def searchGame():
     filter_platform_query = request.args.get("plataforma", type=str, default="").split(
         ","
     )
-    if "" in filter_platform_query: 
+    if "" in filter_platform_query:
         filter_platform_query.remove("")
     filter_year_query = request.args.get("year_of_release", type=str, default="").split(
         ","
@@ -164,9 +170,9 @@ def searchGame():
     if "" in filter_year_query:
         filter_year_query.remove("")
     amount = request.args.get("amount", type=int, default=10)
-    print(filter_year_query)
-    print(filter_platform_query)
-    print(filter_gender_query)
+    # print(filter_year_query)
+    # print(filter_platform_query)
+    # print(filter_gender_query)
     game = app.videoGamesManager.getGamesWithMachName(game_to_search)
     if len(game_to_search) > 0:
         if len(game) > 0:
@@ -179,7 +185,7 @@ def searchGame():
         game = app.videoGamesManager.getRandomVideoGame().id
         print("No se encontro el juego")
 
-    print(game)
+    # print(game)
     related_games = app.videoGamesManager.get_recommendations_with_filters(
         game, filter_gender_query, filter_platform_query, filter_year_query, amount
     )
@@ -203,8 +209,12 @@ def searchGame():
     )
 
 
-def get_games(offset=0, per_page=10):
-    return app.videoGamesManager.getArrayVideoGames()[offset : offset + per_page]
+def get_games(offset=0, per_page=10, platform="Todas", genre="Todos", year="Todos"):
+    if app.lastQuery != (platform, genre, year):
+        app.lastQuery = (platform, genre, year)
+        app.games = app.videoGamesManager.getArrayVideoGames(platform, genre, year)
+    games = app.games
+    return games[offset: offset + per_page]
 
 
 @app.route("/game/<game_name>")
@@ -213,8 +223,6 @@ def game_details(game_name):
         game = app.videoGamesManager.getVideoGame(game_name)
         # image_response = requests.get("https://picsum.photos/400/300")
         game_video = random.choice(get_video_info(game_name + f"gameplay {random.choice(game.platforms)}", 10))
-        print(game_video.embed_url)
-        print(game_video.title)
         game_image = random.choice(get_images_from_google_image(game_name, 10))
         return render_template(
             "game_details.html",
@@ -231,4 +239,4 @@ def game_details(game_name):
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, host="0.0.0.0")

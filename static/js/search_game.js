@@ -23,7 +23,7 @@ const markCheckboxesFromQuery = (paramName, checkboxPrefix) => {
     checkboxes.forEach((checkbox) => {
         const checkboxValue = checkbox.id.replace(`${checkboxPrefix}`, '');
         queryParams.forEach((queryParam) => {
-            if (queryParam.includes(checkboxValue)) {
+            if (queryParam.split(',').includes(checkboxValue)) {
                 checkbox.checked = true;
             }
         });
@@ -90,7 +90,7 @@ const getAmountOfGames = () => {
     return amount.value;
 }
 
-buscar.addEventListener('click', () => {
+function handleSearch() {
     const searchValue = search.value;
     const plataformsFilter = getPlataformFilterValues();
     const genresFilter = getGenresFilterValues();
@@ -113,29 +113,12 @@ buscar.addEventListener('click', () => {
         params.delete('year_of_release');
     params.set('amount', amountOfGames);
     window.location.href = `/search-game?${params.toString()}`;
+}
+
+buscar.addEventListener('click', () => {
+    handleSearch();
 });
 
 filter.addEventListener('click', () => {
-    const searchValue = search.value;
-    const plataformsFilter = getPlataformFilterValues();
-    const genresFilter = getGenresFilterValues();
-    const agesFilter = getYearsFilterValues();
-    const amountOfGames = getAmountOfGames();
-    const url = new URL(window.location.href);
-    const params = new URLSearchParams(url.search);
-    params.set('search', searchValue);
-    if (plataformsFilter.length > 0)
-        params.set('plataforma', plataformsFilter);
-    else
-        params.delete('plataforma');
-    if (genresFilter.length > 0)
-        params.set('genero', genresFilter);
-    else
-        params.delete('genero');
-    if (agesFilter.length > 0)
-        params.set('year_of_release', agesFilter);
-    else
-        params.delete('year_of_release');
-    params.set('amount', amountOfGames);
-    window.location.href = `/search-game?${params.toString()}`;
+    handleSearch();
 });
