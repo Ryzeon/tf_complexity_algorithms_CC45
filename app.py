@@ -241,7 +241,7 @@ def game_details(game_name):
 
 if __name__ == "__main__":
     print("Running...")
-    if os.getenv("SSL") == "True":
+    if os.getenv("SSL") is not None:
         print("Running with SSL")
         import ssl
 
