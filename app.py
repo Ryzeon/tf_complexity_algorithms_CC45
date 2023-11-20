@@ -1,3 +1,4 @@
+import os
 import random
 import time
 
@@ -239,4 +240,14 @@ def game_details(game_name):
 
 
 if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0")
+    print("Running...")
+    if os.getenv("SSL") == "True":
+        print("Running with SSL")
+        import ssl
+
+        context = ssl.SSLContext()
+        context.load_cert_chain('fullchain.pem', 'privkey.pem')
+        app.run(debug=True, host="0,0,0,0", ssl_context=context)
+    else:
+        print("Running without SSL")
+        app.run(debug=True, host="0.0.0.0")
