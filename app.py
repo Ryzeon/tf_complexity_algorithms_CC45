@@ -247,7 +247,7 @@ if __name__ == "__main__":
 
         context = ssl.SSLContext()
         context.load_cert_chain('fullchain.pem', 'privkey.pem')
-        app.run(debug=True, host="0,0,0,0", ssl_context=context)
+        app.run(debug=True, host="0.0.0.0", ssl_context=context)
     else:
         print("Running without SSL")
         app.run(debug=True, host="0.0.0.0")
